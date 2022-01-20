@@ -1,0 +1,83 @@
+app:
+  # 是否为开发者模式
+  # 开发者模式下不启用模板缓存
+  devMode: false
+  # AES密钥
+  key: key1
+
+logging:
+  file:
+    name: logs/run.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      file-name-pattern: '${LOG_FILE}.%d{yyMM}.%i.log'
+      max-file-size: 100MB
+      max-history: 365
+
+server:
+  address: 0.0.0.0
+  compression:
+    enabled: false
+  port: 8080
+  tomcat:
+    accesslog:
+      enabled: true
+      file-date-format: '.yyMMdd'
+      max-days: 365
+      pattern: '%a | "%{x-forwarded-for}i" | %t |  "%r" | %D | %s | %B | "%{referer}i" | "%{user-agent}i" | "%{content-type}i"'
+      prefix: tomcat
+    basedir: ./
+    max-swallow-size: -1
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+    # 视业务类型 cpu core * (4-10)
+    threads:
+      min-spare: 8
+      max: 8
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+    session:
+      # 留空,禁用跟踪模式
+      tracking-modes:
+
+spring:
+  data:
+    redis:
+      repositories:
+        enabled: false
+  datasource:
+    url: jdbc:mysql://127.0.0.1/smart
+    username: user
+    password:
+    hikari:
+      auto-commit: false
+      # 4(dev mode) - 10 or more
+      maximum-pool-size: 4
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    open-in-view: true
+  main:
+    banner-mode: off
+  mvc:
+    servlet:
+      load-on-startup: 1
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    client-type: lettuce
+    lettuce:
+      pool:
+        # 2(dev mode) - 8 or more
+        max-active: 2
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB

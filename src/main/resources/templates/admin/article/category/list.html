@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head">
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header"/>
+
+<div class="alert alert-primary" role="alert">
+    [[${title}]]&nbsp;<a href="edit">新建文章类别</a>
+</div>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>分类名称</th>
+        <th>页脚显示</th>
+        <th>推荐值</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${articleList}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.footerShow ? '是' : '否'}"></td>
+        <td th:text="${item.recommend}"></td>
+        <td>
+            <a th:href="'edit?id=' + ${item.id}"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;&nbsp;
+            <a th:href="'javascript:deleteRequest(%22delete?id=' + ${item.id} + '%22)'" th:if="${item.id > 1}">
+                <i class="fa fa-remove"></i>
+            </a></td>
+    </tr>
+    </tbody>
+</table>
+<div th:replace="admin/components::footer"/>
+</body>
+</html>

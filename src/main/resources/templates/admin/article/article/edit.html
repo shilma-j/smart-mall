@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head(script=~{::head/script})">
+    <script th:src="${#helpers.retouch('/js/tinymce/tinymce.min.js')}"></script>
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header"/>
+
+<div class="alert alert-primary" role="alert" th:text="${title}"></div>
+<form autocomplete="off" method="post">
+    <input type='hidden' name='id' th:value="${item.id}">
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label for="releaseTime">发布日期</label>
+            <input type="datetime-local" class="form-control" id="releaseTime" name="releaseTime" placeholder="日期"
+                   th:value="${#helpers.dateFormat(item.releaseTime, 'yyyy-MM-dd''T''HH:mm')}">
+        </div>
+        <div class="form-group col-md-4">
+            <label>文章分类</label>
+            <select class="form-control" name="cateId">
+                <option th:each="cate : ${articleList}" th:text="${cate.name}" th:value="${cate.id}"
+                        th:selected="${cate.id == item.cateId}"></option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label>是否显示</label><br>
+            <input type="radio" class="form-check-input" name="visible" id="visible1" th:value="1"
+                   th:checked="${item.visible}">
+            <label for="visible1">是</label>&nbsp;&nbsp;
+            <input type="radio" class="form-check-input" name="visible" id="visible0" th:value="0"
+                   th:checked="${!item.visible}">
+            <label for="visible1">否</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="recommend">推荐值</label>
+            <input type="number" class="form-control" id="recommend" name="recommend" placeholder="推荐值"
+                   th:value="${item.recommend}" min="0" step="1">
+        </div>
+        <div class="form-group col-md-12">
+            <label for="title">文章标题</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="文章标题"
+                   th:value="${item.title}" required>
+        </div>
+
+
+        <div class="form-group col-md-12">
+            <label>内容</label><br>
+            <textarea name="content" id="content" th:text="${item.content}"></textarea>
+        </div>
+    </div>
+
+    <div class="text-center"><br>
+        <button class="btn btn-primary">确定</button>
+    </div>
+</form>
+<br>
+<script>
+    tinymce.init({
+        convert_urls: false,
+        language: 'zh_CN',
+        selector: '#content',
+        height: '30rem',
+        plugins: "autolink code fullscreen help image link media preview table",
+        toolbar: 'undo redo | formatselect | ' +
+            'bold italic backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | image | fullscreen | code | preview',
+
+        /* we override default upload handler to simulate successful upload */
+        images_upload_handler: function (blobInfo, success, failure) {
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+            fetch('/admin/upload', {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin"
+            }).then(response => {
+                if (response.status !== 200) {
+                    failure("未知错误，请联系统管理员, status:" + response.status);
+                    return;
+                }
+                response.json().then(json => {
+                    success(json.url);
+                });
+            }).catch(error => {
+                failure("网络错误");
+            });
+        },
+        setup: function (editor) {
+            editor.on('change', function () {
+                tinymce.triggerSave();
+            });
+        }
+    });
+</script>
+<div th:replace="admin/components::footer"/>
+</body>
+</html>

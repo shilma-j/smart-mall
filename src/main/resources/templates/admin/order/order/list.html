@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head">
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header"/>
+
+<div class="alert alert-primary" role="alert">
+    [[${title}]]
+</div>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>订单号</th>
+        <th>用户</th>
+        <th>金额</th>
+        <th>收货人</th>
+        <th>订单状态</th>
+        <th>下单时间</th>
+        <th>支付时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${pagination.rows}">
+        <td>
+            <a th:href="@{/admin/order/order/edit(no=${item.no})}" th:text="${item.no}"></a>&nbsp;&nbsp;&nbsp;
+        </td>
+        <td th:text="${item.userName}"></td>
+        <td th:text="${#helpers.priceFormat(item.amount)}"></td>
+        <td th:text="${item.consignee}"></td>
+        <td th:text="${#helpers.getOrderStatusInfo(item.status)}"></td>
+        <td th:text="${#helpers.dateFormat(item.createTime)}"></td>
+        <td th:text="${#helpers.dateFormat(item.payTime)}"></td>
+        <td>
+            <a th:href="@{/admin/order/order/edit(no=${item.no})}"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;&nbsp;
+            <a th:href="'javascript:deleteRequest(%22delete?id=' + ${item.id} + '%22)'">
+                <i class="fa fa-remove"></i>
+            </a></td>
+    </tr>
+    </tbody>
+</table>
+<nav th:utext="${pagination.generateBootstrapPagination()}"/>
+
+<div th:replace="admin/components::footer"/>
+</body>
+</html>

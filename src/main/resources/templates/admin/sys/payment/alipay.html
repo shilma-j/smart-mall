@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head">
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header"/>
+
+<div class="alert alert-primary" role="alert" th:text="${title}"></div>
+<form autocomplete="off" method="post">
+    <input type='hidden' name='name' th:value="${payment.name}">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label>名称</label>
+            <input type="text" class="form-control"
+                   th:value="${payment.name1}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>状态</label><br>
+            <input type="radio" name="enable" id="enable1" value="1" th:checked="${payment.enable}">
+            <label for="enable1">启用</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="enable" id="enable0" value="0" th:checked="${!payment.enable}">
+            <label for="enable0">停用</label>
+        </div>
+        <div class="form-group col-md-6">
+            <label>推荐权重</label>
+            <input type="number" class="form-control" min="0" max="99"
+                   name="recommend" th:value="${payment.recommend}" step="1">
+        </div>
+        <div class="form-group col-md-6">
+            <label>App ID</label>
+            <input type="text" class="form-control"
+                   name="appId" th:value="${config['appId']}">
+        </div>
+        <div class="form-group col-md-6">
+            <label>商户私钥</label>
+            <textarea class="form-control" name="merchantPrivateKey"
+                      th:text="${config['merchantPrivateKey']}"></textarea>
+        </div>
+        <div class="form-group col-md-6">
+            <label>支付宝公钥</label>
+            <textarea class="form-control" name="alipayPublicKey"
+                      th:text="${config['alipayPublicKey']}"></textarea>
+        </div>
+
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-primary">确定</button>
+    </div>
+</form>
+<br>
+<div th:replace="admin/components::footer"/>
+</body>
+</html>

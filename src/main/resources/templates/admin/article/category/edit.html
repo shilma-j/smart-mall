@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head">
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header" />
+
+<div class="alert alert-primary" role="alert" th:text="${title}"></div>
+<form autocomplete="off" method="post">
+    <input type='hidden' name='id' th:value="${item.id}">
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label for="name">分类名称</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="分类名称"
+                   th:value="${item.name}" required>
+        </div>
+        <div class="form-group col-md-4">
+            <label>页脚显示</label><br>
+            <input class="form-check-input" name="footerShow" id="footerShow1" th:type="radio" th:checked="${item.footerShow}" value="1">
+            <label for="footerShow1">是</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input class="form-check-input" name="footerShow" id="footerShow2" th:type="radio" th:checked="${!item.footerShow}" value="0">
+            <label for="footerShow2">否</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="recommend">推荐值</label>
+            <input type="number" class="form-control" id="recommend" name="recommend" placeholder="推荐值"
+                   th:value="${item.recommend}" min="0" step="1">
+        </div>
+    </div>
+
+    <div class="text-center"><br><button class="btn btn-primary">确定</button></div>
+</form>
+<br>
+<div th:replace="admin/components::footer" />
+</body>
+</html>

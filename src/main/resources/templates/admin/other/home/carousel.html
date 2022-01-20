@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components::head(style=~{::style})">
+    <style>
+        form a.remove {
+            margin: 0 1rem
+        }
+
+        form img.carousel {
+            display: block;
+            border: #d6d8db 1px solid;
+            height: 120px;
+            width: 216px;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body class="container-fluid">
+<div th:replace="admin/components::header"/>
+
+<div class="alert alert-primary" role="alert" th:text="${title}"></div>
+
+<div class="row" id="div1">
+    <form autocomplete="off" method="post">
+        <div class="form-group col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th style="width:30%">图片(720px * 400px)</th>
+                    <th style="width:50%">链接/备注</th>
+                    <th>操作</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr v-for="(item,index) in items" :data-index="index">
+                    <td>
+                        <input type="hidden" name="img" :value="item.img">
+                        <img v-show="item.img.length > 5" class="carousel" :src="item.img">
+                        <input type="file" @change="upload">
+                    </td>
+                    <td>
+                        链接:<input class="form-control" name="link" v-model="item.link">
+                        <br>
+                        备注:<input class="form-control" name="des" v-model="item.des">
+                    </td>
+                    <td>
+                        <a href="javascript:;" @click="moveUp">
+                            <i class="fa fa-arrow-up fa-lg"></i></a>
+                        <a href="javascript:;" @click="deleteItem" class="remove">
+                            <i class="fa fa-remove fa-lg"></i></a>
+                        <a href="javascript:;" @click="moveDown">
+                            <i class="fa fa-arrow-down fa-lg"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+
+                        <button type="button" class="btn btn-success float-end" @click="newItem">添加轮播</button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">确定</button>
+        </div>
+    </form>
+</div>
+
+
+<br>
+<script>
+    const CarouselRendering = {
+        data() {
+            return {
+                "items": [(${carousel})],
+                "message": "hi swq"
+            };
+        },
+        methods: {
+            log: function () {
+                console.log(JSON.stringify(this.items))
+            },
+            // 删除
+            deleteItem: function (e) {
+                let i = e.target.closest("tr").getAttribute("data-index")
+                this.items.splice(i, 1)
+            },
+            // 下移
+            moveDown: function (e) {
+                if (this.items.length <= 1) {
+                    return
+                }
+                let i = parseInt(e.target.closest("tr").getAttribute("data-index"))
+                let tmp = this.items[i];
+                if (i === (this.items.length - 1)) {
+                    this.items.pop()
+                    this.items.unshift(tmp)
+                    return
+                }
+                this.items[i] = this.items[i + 1]
+                this.items[i + 1] = tmp
+            },
+            // 上移
+            moveUp: function (e) {
+                if (this.items.length <= 1) {
+                    return
+                }
+                let i = parseInt(e.target.closest("tr").getAttribute("data-index"))
+                let tmp = this.items[i];
+                if (i === 0) {
+                    this.items.shift()
+                    this.items.push(tmp)
+                    return
+                }
+                this.items[i] = this.items[i - 1]
+                this.items[i - 1] = tmp
+            },
+            // 添加
+            newItem: function () {
+                this.items.push({
+                    img: "",
+                    link: "",
+                    des: ""
+                })
+            },
+            submit: function (e) {
+                console.log( JSON.stringify(this.items))
+            },
+            upload: function (e) {
+                let index = parseInt(e.target.closest("tr").getAttribute("data-index"))
+                let that = this
+                let ele = e.target
+                if (ele.files.length === 0) {
+                    return;
+                }
+                let file = ele.files[0]
+                if (file.size > 0x100000) {
+                    alert("文件尺寸请勿超过1MB");
+                    return;
+                }
+                if (file.type.substring(0, 5) !== "image") {
+                    alert("请选择图片文件");
+                    return;
+                }
+                let data = new FormData()
+                data.append('file', file);
+                fetch('/admin/upload', {
+                    method: "POST",
+                    body: data,
+                    credentials: "same-origin"
+                }).then(response => {
+                    if (response.status !== 200) {
+                        alert("未知错误，请联系统管理员, status:" + response.status)
+                        return;
+                    }
+                    response.json().then(json => {
+                        that.items[index].img = json.url
+                    })
+                }).catch(error => {
+                    alert("网络错误")
+                });
+            }
+        }
+    }
+
+    Vue.createApp(CarouselRendering).mount('#div1')
+</script>
+<!--script th:src="${#helpers.retouch('/admin/carousel1.js')}"></script-->
+<div th:replace="admin/components::footer"/>
+</body>
+</html>
