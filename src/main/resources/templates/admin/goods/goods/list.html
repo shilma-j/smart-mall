@@ -37,7 +37,7 @@
         </td>
         <td class="goodsName"><a th:href="${siteUrl} + '/goods/' + ${item.id} + '.html'" th:text="${item.name}"
                                  target="_blank"></a>
-            <br>更新日期:[[${item.update_time}]]&nbsp;&nbsp;推荐权重:[[${item.recommend}]]
+            <br>更新日期:[[${#helpers.dateFormat(item.updateTime)}]]&nbsp;&nbsp;推荐权重:[[${item.recommend}]]
         </td>
         <td>[[${item.cateName}]]<br>[[${#helpers.priceFormat(item.price)}]]</td>
         <td>

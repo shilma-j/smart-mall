@@ -16,4 +16,10 @@ class DbTest {
     void getTableNameByEntity() {
         Assertions.assertEquals(Db.getTableNameByEntity(OrderGoodsEntity.class), "t_order_goods");
     }
+
+    @Test
+    void underscoresToCamelCaseNaming() {
+        Assertions.assertEquals(Db.underscoresToCamelCaseNaming("ORDER_ID"), "orderId");
+        Assertions.assertEquals(Db.underscoresToCamelCaseNaming("user_id"), "userId");
+    }
 }

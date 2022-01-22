@@ -107,16 +107,16 @@ public class Order {
         String sql = """
                 SELECT 
                     o.consignee,
-                    o.create_time as createTime,
+                    o.create_time,
                     o.id,
                     o.no,
-                    o.pay_time as payTime,
-                    o.pay_amount as payAmount,
-                    o.pay_no as payNo,
+                    o.pay_time,
+                    o.pay_amount,
+                    o.pay_no,
                     o.amount,
                     o.status,
-                    o.user_id as userId,
-                    u.name as userName
+                    o.user_id,
+                    u.name as user_name
                 FROM t_order o
                 LEFT JOIN t_user u ON o.user_id = u.id
                 ORDER BY o.id DESC

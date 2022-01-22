@@ -132,7 +132,7 @@ CREATE TABLE `t_brand` (
   `name` varchar(255) NOT NULL,
   `note` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +159,7 @@ CREATE TABLE `t_category` (
   `i` bigint unsigned NOT NULL DEFAULT '0' COMMENT '首页显示 0:no 1:display',
   `recommend` bigint NOT NULL DEFAULT '1000',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3 COMMENT='推荐值';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推荐值';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

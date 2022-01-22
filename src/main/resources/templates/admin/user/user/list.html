@@ -42,8 +42,8 @@
             <td th:text="${item.surplus}"></td>
             <td th:text="${item.phone}"></td>
             <td th:text="${item.email}"></td>
-            <td th:text="${#helpers.dateFormat(item.register_time)}"></td>
-            <td th:text="${#helpers.dateFormat(item.last_login_time)}"></td>
+            <td th:text="${#helpers.dateFormat(item.registerTime)}"></td>
+            <td th:text="${#helpers.dateFormat(item.lastLoginTime)}"></td>
             <td>
                 <a class="icon" th:href="@{/admin/user/user/edit(id=${item.id})}">
                     <i class="fa fa-edit"></i>

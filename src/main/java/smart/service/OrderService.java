@@ -1,21 +1,18 @@
 package smart.service;
 
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import smart.cache.ExpressCache;
 import smart.cache.PaymentCache;
 import smart.config.AppConfig;
 import smart.entity.*;
-import smart.lib.Cart;
-import smart.lib.Db;
-import smart.lib.Helper;
-import smart.lib.Validate;
+import smart.lib.*;
 import smart.lib.payment.Payment;
 import smart.lib.status.GoodsStatus;
 import smart.lib.status.OrderGoodsStatus;
 import smart.lib.status.OrderStatus;
 import smart.repository.*;
-import org.springframework.dao.CannotAcquireLockException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -55,101 +52,11 @@ public class OrderService {
         return Helper.longValue(str + str1);
     }
 
-    /**
-     * 取消未付款的订单
-     *
-     * @param orderNo order no
-     * @return null(成功) or 错误信息
-     */
-    @Transactional
-    public String cancelOrder(long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=4 where no = ? and status = 0 and payTime is null", orderNo) == 0) {
-            return "订单信息错误";
-        }
-        // 增加库存
-        orderGoodsService.backOrderGoods(orderNo);
-        return null;
-    }
-
-
-    /**
-     * 取消未付款的订单,取消时验证用户是否拥有该订单
-     *
-     * @param userId  user id
-     * @param orderNo order no
-     * @return null(成功) or 错误信息
-     */
-    @Transactional
-    public String cancelOrder(long userId, long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=4 where no = ? and userId = ? and status = 0 and payTime is null", orderNo, userId) == 0) {
-            return "订单信息错误";
-        }
-        // 增加库存
-        orderGoodsService.backOrderGoods(orderNo);
-        return null;
-    }
-
-    /**
-     * 确认收货
-     *
-     * @param orderNo order no
-     * @return null(成功) or 错误信息
-     */
-    @Transactional
-    public String confirmOrder(long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=3, confirmTime=NOW() where no = ? and status = 2", orderNo) == 0) {
-            return "订单信息错误";
-        }
-        AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
-        return null;
-    }
-
-    /**
-     * 确认收货,确认时验证用户是否拥有该订单
-     *
-     * @param userId  user id
-     * @param orderNo order no
-     * @return null(成功) or 错误信息
-     */
-    @Transactional
-    public String confirmOrder(long userId, long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=3, confirmTime=NOW() where no = ? and userId = ? and status = 2", orderNo, userId) == 0) {
-            return "订单信息错误";
-        }
-        AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
-        return null;
-    }
-
-    /**
-     * 设置订单删除状态, 复原/回收站/删除
-     *
-     * @param userId  user id
-     * @param orderNo order no
-     * @param deleted deleted status
-     * @return null(成功) or 错误信息
-     */
-    public String deleteOrder(long userId, long orderNo, int deleted) {
-        if (deleted < 0 || deleted > 2) {
-            return "删除参数不正确";
-        }
-        String sql = "update t_order set deleted=? where no = ? and userId = ? and deleted=? and status > 2";
-        int tmp = 0;
-        int oldDeleted = deleted == 1 ? 0 : 1;
-        if (AppConfig.getJdbcTemplate().update(sql, deleted, orderNo, userId, oldDeleted) == 0) {
-            return "订单信息错误";
-        }
-        return null;
-    }
-
 
     /**
      * 下单
      *
-     * @param addrId      地址ID
+     * @param addressId   地址ID
      * @param cart        用户购物车
      * @param sumPrice    商品总金额,用于效验
      * @param shippingFee 物流费,用于效验
@@ -157,7 +64,7 @@ public class OrderService {
      * @return 订单信息
      */
     @Transactional
-    public OrderInfo addOrder(long addrId,
+    public OrderInfo addOrder(long addressId,
                               String payName,
                               Cart cart,
                               long sumPrice,
@@ -169,14 +76,14 @@ public class OrderService {
         if (userEntity == null || userEntity.getStatus() != 0) {
             return orderInfo.setErr("用户不存在或状态异常");
         }
-        UserAddressEntity addr = userAddressRepository.findByIdAndUserId(addrId, userId);
-        if (addr == null) {
+        UserAddressEntity addressEntity = userAddressRepository.findByIdAndUserId(addressId, userId);
+        if (addressEntity == null) {
             return orderInfo.setErr("收货地址不存在");
         }
         if (payName == null || !PaymentCache.getPaymentNames().contains(payName)) {
             return orderInfo.setErr("支付方式不正确");
         }
-        if (cart.sumPrice() != sumPrice || cart.shippingFee(addr.getRegion()) != shippingFee || cart.sumNum() == 0) {
+        if (cart.sumPrice() != sumPrice || cart.shippingFee(addressEntity.getRegion()) != shippingFee || cart.sumNum() == 0) {
             return orderInfo.setErr("购物车被修改，请重新提交");
         }
 
@@ -218,7 +125,7 @@ public class OrderService {
                     return orderInfo.setErr("库存不足:" + goodsEntity.getName());
                 }
             } else {
-                GoodsSpecEntity goodsSpecEntity = null;
+                GoodsSpecEntity goodsSpecEntity;
                 try {
                     goodsSpecEntity = goodsSpecRepository.findByIdForUpdate(item.getSpecId());
                 } catch (CannotAcquireLockException e) {
@@ -233,34 +140,29 @@ public class OrderService {
                 }
             }
         }
+        OrderEntity orderEntity = new OrderEntity();
         // 订单ID
-        long orderId = AppConfig.getOrderId().incrementAndGet();
+        orderEntity.setId(AppConfig.getOrderId().incrementAndGet());
         // 订单号
-        long orderNo = generalOrderNo(orderId);
+        orderEntity.setNo(generalOrderNo(orderEntity.getId()));
         // 订单金额
-        long orderAmount = sumPrice + shippingFee;
-        // 创建订单信息记录
-        Map<String, Object> orderRow = new HashMap<>();
-        orderRow.put("address", addr.getAddress());
-        orderRow.put("amount", orderAmount);
-        orderRow.put("consignee", addr.getConsignee());
-        orderRow.put("createTime", Helper.now());
-        orderRow.put("id", orderId);
-        orderRow.put("no", orderNo);
-        orderRow.put("payName", payName);
-        orderRow.put("phone", addr.getPhone());
-        orderRow.put("region", addr.getRegion());
-        orderRow.put("shippingFee", shippingFee);
-        orderRow.put("source", source);
-        orderRow.put("userId", userId);
+        orderEntity.setAmount(sumPrice + shippingFee);
+        orderEntity.setAddress(addressEntity.getAddress());
+        orderEntity.setConsignee(addressEntity.getConsignee());
+        orderEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        orderEntity.setPayName(payName);
+        orderEntity.setPhone(addressEntity.getPhone());
+        orderEntity.setRegion(addressEntity.getRegion());
+        orderEntity.setShippingFee(shippingFee);
+        orderEntity.setSource(source);
+        orderEntity.setUserId(userId);
+
         // 0额订单无需支付
-        if (orderAmount == 0) {
-            orderRow.put("status", OrderStatus.WAIT_FOR_SHIPPING.getCode());
-            orderRow.put("payTime", Helper.now());
+        if (orderEntity.getAmount() == 0) {
+            orderEntity.setStatus(OrderStatus.WAIT_FOR_SHIPPING.getCode());
+            orderEntity.setPayTime(orderEntity.getCreateTime());
         }
 
-        // 数据库保存订单
-        Db.insert("orders", orderRow);
 
         // 扣库存，创建订单商品
         cartItems.forEach(item -> {
@@ -274,7 +176,7 @@ public class OrderService {
                         item.getNum(), item.getSpecId());
             }
             OrderGoodsEntity orderGoodsEntity = new OrderGoodsEntity();
-            orderGoodsEntity.setOrderNo(orderNo);
+            orderGoodsEntity.setOrderNo(orderEntity.getNo());
             orderGoodsEntity.setGoodsId(item.getGoodsId());
             orderGoodsEntity.setGoodsName(item.getGoodsName());
             orderGoodsEntity.setNum(item.getNum());
@@ -283,13 +185,121 @@ public class OrderService {
             orderGoodsEntity.setPrice(item.getGoodsPrice());
             orderGoodsEntity.setWeight(item.getGoodsWeight());
             orderGoodsEntity.setImg(item.getGoodsImg());
-            orderGoodsService.insertOrderGoods(orderGoodsEntity);
+            Db.insert(orderGoodsEntity);
         });
+        Db.insert(orderEntity);
         cart.del(cartItems);
-        orderInfo.setOrderNo(orderNo).setAmount(orderAmount);
+        orderInfo.setOrderNo(orderEntity.getNo()).setAmount(orderEntity.getAmount());
         return orderInfo;
-
     }
+
+    /**
+     * 取消未付款的订单
+     *
+     * @param orderNo order no
+     * @return null(成功) or 错误信息
+     */
+    @Transactional
+    public String cancelOrder(long orderNo) {
+        if (AppConfig.getJdbcTemplate().
+                update("update t_order set status=4 where no = ? and status = 0 and pay_time is null", orderNo) == 0) {
+            return "订单信息错误";
+        }
+        // 增加库存
+        orderGoodsService.backOrderGoods(orderNo);
+        return null;
+    }
+
+
+    /**
+     * 取消未付款的订单,取消时验证用户是否拥有该订单
+     *
+     * @param userId  user id
+     * @param orderNo order no
+     * @return null(成功) or 错误信息
+     */
+    @Transactional
+    public String cancelOrder(long userId, long orderNo) {
+        if (AppConfig.getJdbcTemplate().
+                update("update t_order set status=4 where no = ? and user_id = ? and status = 0 and pay_time is null", orderNo, userId) == 0) {
+            return "订单信息错误";
+        }
+        // 增加库存
+        orderGoodsService.backOrderGoods(orderNo);
+        return null;
+    }
+
+    /**
+     * 确认收货
+     *
+     * @param orderNo order no
+     * @return null(成功) or 错误信息
+     */
+    @Transactional
+    public String confirmOrder(long orderNo) {
+        if (AppConfig.getJdbcTemplate().
+                update("update t_order set status=3, confirm_time=NOW() where no = ? and status = 2", orderNo) == 0) {
+            return "订单信息错误";
+        }
+        AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
+        return null;
+    }
+
+    /**
+     * 确认收货,确认时验证用户是否拥有该订单
+     *
+     * @param userId  user id
+     * @param orderNo order no
+     * @return null(成功) or 错误信息
+     */
+    @Transactional
+    public String confirmOrder(long userId, long orderNo) {
+        if (AppConfig.getJdbcTemplate().
+                update("update t_order set status=3, confirm_time=NOW() where no = ? and user_id = ? and status = 2", orderNo, userId) == 0) {
+            return "订单信息错误";
+        }
+        AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
+        return null;
+    }
+
+    /**
+     * 设置订单删除状态, 复原/回收站/删除
+     *
+     * @param userId  user id
+     * @param orderNo order no
+     * @param deleted deleted status
+     * @return null(成功) or 错误信息
+     */
+    public String deleteOrder(long userId, long orderNo, int deleted) {
+        if (deleted < 0 || deleted > 2) {
+            return "删除参数不正确";
+        }
+        String sql = "update t_order set deleted=? where no = ? and user_id = ? and deleted=? and status > 2";
+        int tmp = 0;
+        int oldDeleted = deleted == 1 ? 0 : 1;
+        if (AppConfig.getJdbcTemplate().update(sql, deleted, orderNo, userId, oldDeleted) == 0) {
+            return "订单信息错误";
+        }
+        return null;
+    }
+
+    /**
+     * 获取用户订单,用户端使用
+     *
+     * @param userId      user id
+     * @param pageSize    page size
+     * @param page        current page
+     * @param keyWord     key word
+     * @param isDeleted   is deleted
+     * @param orderStatus order status, all status if null
+     * @return user orders
+     */
+    public Pagination getUserOrders(long userId, long pageSize, long page, String keyWord, boolean isDeleted, OrderStatus orderStatus) {
+        String sql = "select id, no, user_id as userId,region from t_order";
+        Pagination pagination = new Pagination("", 0);
+        return pagination;
+    }
+
 
     /**
      * 支付订单
@@ -312,7 +322,7 @@ public class OrderService {
         if (orderEntity.getStatus() != 0) {
             return "该订单不是待支付订单";
         }
-        AppConfig.getJdbcTemplate().update("update t_order set payName = ?,payTime = ?,payAmount = ?,payNo =?,status = 1 where no = ?",
+        AppConfig.getJdbcTemplate().update("update t_order set pay_name = ?,pay_time = ?,pay_amount = ?,pay_no =?,status = 1 where no = ?",
                 payName, new Timestamp(System.currentTimeMillis()), payAmount, payNo, orderNo);
         return null;
     }
@@ -339,7 +349,7 @@ public class OrderService {
             return "订单号不得为空";
         }
         expressNo = expressNo.trim();
-        AppConfig.getJdbcTemplate().update("update t_order set expressId = ?, express_no = ?, shippingTime = ?,status = 2 where no = ?",
+        AppConfig.getJdbcTemplate().update("update t_order set express_id = ?, express_no = ?, shipping_time = ?,status = 2 where no = ?",
                 expressId, expressNo, new Timestamp(System.currentTimeMillis()), orderNo);
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.SHIPPED.getCode(), orderNo);
         return null;
@@ -369,7 +379,7 @@ public class OrderService {
         }
 
         if (AppConfig.getJdbcTemplate().
-                update("update t_order set status = 5 where no = ? and status in (1,2,3) and payTime is not null", orderNo) == 0) {
+                update("update t_order set status = 5 where no = ? and status in (1,2,3) and pay_time is not null", orderNo) == 0) {
             return "订单信息错误";
         }
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RETURNED.getCode(), orderNo);

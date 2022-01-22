@@ -34,23 +34,4 @@ public class OrderGoodsService {
             }
         }
     }
-
-    /**
-     * 数据库插入订单商品记录
-     *
-     * @param ety orderGoodsEntity
-     */
-    public void insertOrderGoods(OrderGoodsEntity ety) {
-        Map<String, Object> row = new HashMap<>();
-        row.put("orderNo", ety.getOrderNo());
-        row.put("goodsId", ety.getGoodsId());
-        row.put("specId", ety.getSpecId());
-        row.put("specDes", ety.getSpecDes());
-        row.put("goodsName", ety.getGoodsName());
-        row.put("price", ety.getPrice());
-        row.put("weight", ety.getWeight());
-        row.put("num", ety.getNum());
-        row.put("img", ety.getImg());
-        Db.insert("orderGoods", row);
-    }
 }

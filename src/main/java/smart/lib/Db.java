@@ -21,12 +21,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Db {
 
     private static JdbcTemplate jdbc;
-    private static NamedParameterJdbcTemplate namedParameterJdbc;
 
     /**
-     * camel case to underscores naming
+     * camel case to underscores naming name
      *
-     * @param name camel case name
+     * @param name camel case naming name
      * @return underscores naming name
      */
     public static String camelCaseToUnderscoresNaming(String name) {
@@ -158,8 +157,13 @@ public class Db {
      */
     public static void insert(String table, Map<String, Object> row) {
         StringBuilder sql = new StringBuilder(String.format("INSERT INTO `%s` (", table));
-        for (String key : row.keySet()) {
-            sql.append(String.format("`%s`,", key));
+        for (String key : row.keySet().toArray(String[]::new)) {
+            if (row.get(key) != null) {
+                sql.append(String.format("`%s`,", key));
+            } else {
+                row.remove(key);
+            }
+
         }
         sql.deleteCharAt(sql.length() - 1).append(") VALUES (").append("?,".repeat(row.size())).deleteCharAt(sql.length() - 1).append(")");
         jdbc.update(sql.toString(), row.values().toArray());
@@ -198,6 +202,28 @@ public class Db {
     }
 
     /**
+     * underscores to camel case naming
+     *
+     * @param name underscores naming name
+     * @return camel case naming name
+     */
+    public static String underscoresToCamelCaseNaming(String name) {
+        if (name == null) {
+            return null;
+        }
+        name = name.toLowerCase();
+        StringBuilder builder = new StringBuilder(name);
+        for (int i = 2; i < builder.length();) {
+            if (builder.charAt(i - 1) == '_') {
+                builder.replace(i - 1, i + 1, String.valueOf(builder.charAt(i)).toUpperCase());
+            } else {
+                i++;
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
      * 更新行数据
      *
      * @param table 表名字
@@ -208,8 +234,10 @@ public class Db {
         StringBuilder sql = new StringBuilder(String.format("UPDATE `%s` SET", table));
         List<Object> params = new LinkedList<>();
         for (String key : row.keySet()) {
-            sql.append(String.format(" `%s`=?,", key));
-            params.add(row.get(key));
+            if (row.get(key) != null) {
+                sql.append(String.format(" `%s`=?,", key));
+                params.add(row.get(key));
+            }
         }
         sql.deleteCharAt(sql.length() - 1).append(" WHERE");
         for (String key : where.keySet()) {

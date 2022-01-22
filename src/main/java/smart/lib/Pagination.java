@@ -4,10 +4,7 @@ import smart.config.AppConfig;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -153,7 +150,15 @@ public class Pagination {
             startIndex = 0;
         }
         String sql1 = String.format("%s limit %d,%d", sql, startIndex, pageSize);
-        rows = AppConfig.getJdbcTemplate().queryForList(sql1, params);
+        rows = new ArrayList<>();
+        AppConfig.getJdbcTemplate().queryForList(sql1, params).forEach(row -> {
+            Map<String, Object> row1 = new LinkedHashMap<>();
+            row.keySet().forEach(key->{
+                row1.put(Db.underscoresToCamelCaseNaming(key), row.get(key));
+            });
+            rows.add(row1);
+        });
+
         endIndex = startIndex + rows.size();
     }
 
