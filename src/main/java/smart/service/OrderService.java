@@ -54,7 +54,7 @@ public class OrderService {
 
 
     /**
-     * 下单
+     * 添加订单
      *
      * @param addressId   地址ID
      * @param cart        用户购物车
