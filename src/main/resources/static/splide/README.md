@@ -1,8 +1,7 @@
 # Splide
+<https://github.com/Splidejs/splide>
 <p align="center">
-  <a href="https://splidejs.com/" target="_blank">
-    <img src="images/hero.png">
-  </a>
+  <a href="https://splidejs.com/" target="_blank"></a>
 </p>
 
 **[Splide](https://splidejs.com/) is a lightweight, powerful and flexible slider and carousel, written in pure JavaScript without any dependencies.**
