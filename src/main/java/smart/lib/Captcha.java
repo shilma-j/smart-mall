@@ -83,24 +83,10 @@ public class Captcha {
         return new Color(40 + ran.nextInt(180), 40 + ran.nextInt(180), 40 + ran.nextInt(180));
     }
 
+    /**
+     * @param image  验证码图片实例
+     * @param phrase 验证码
+     */
     public record CaptchaResult(BufferedImage image, String phrase) {
-
-        /**
-         * 获取验证码图片实例
-         *
-         * @return image
-         */
-        public BufferedImage getImage() {
-            return image;
-        }
-
-        /**
-         * 获取验证码
-         *
-         * @return 验证码
-         */
-        public String getPhrase() {
-            return phrase;
-        }
     }
 }

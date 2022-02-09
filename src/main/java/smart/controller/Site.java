@@ -57,9 +57,9 @@ public class Site {
         response.setHeader("Cache-Control", "no-store");
         response.setContentType("image/png");
         var captchaResult = Captcha.getImageCode();
-        session.set(Helper.camelCase(Captcha.class), captchaResult.getPhrase().toLowerCase());
+        session.set(Helper.camelCase(Captcha.class), captchaResult.phrase());
         try {
-            ImageIO.write(captchaResult.getImage(), "png", response.getOutputStream());
+            ImageIO.write(captchaResult.image(), "png", response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
