@@ -47,7 +47,7 @@ form li {
 
 .loginForm #captcha {
     float: right;
-    height: 3rem;
+    height: 2.8rem;
 }
 
 .loginForm input[name=captcha] {

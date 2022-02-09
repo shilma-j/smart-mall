@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -47,11 +48,9 @@ public class Launcher {
         Set<String> links = new LinkedHashSet<>();
         links.add("/");
         links.add("/captcha");
-        links.add("/cart/add");
         links.add("/cart/json");
         links.add("/favicon.ico");
         links.add("/list");
-        links.add("/user/login");
         for (var recommend : GoodsCache.getRecommend()) {
             List<Map<String, Object>> goodsList = (List<Map<String, Object>>) recommend.get("goodsList");
             if (goodsList.size() > 0) {
@@ -70,7 +69,11 @@ public class Launcher {
                 .uri(URI.create(uri))
                 .GET()
                 .build();
-        HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        try {
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 }
