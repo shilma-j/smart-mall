@@ -1,11 +1,5 @@
 package smart.controller.admin.sys;
 
-import smart.config.AppConfig;
-import smart.entity.AdminRoleEntity;
-import smart.entity.UserEntity;
-import smart.lib.*;
-import smart.repository.AdminRoleRepository;
-import smart.repository.UserRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.MediaType;
@@ -15,6 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import smart.config.AppConfig;
+import smart.entity.AdminRoleEntity;
+import smart.entity.UserEntity;
+import smart.lib.*;
+import smart.repository.AdminRoleRepository;
+import smart.repository.UserRepository;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -56,9 +56,9 @@ public class AdminUser {
         String sql = """
                 select u.id,
                        u.name as name,
-                       au.role_id
+                       au.role_id as roleId
                 from t_admin_user au
-                         left join users u on au.user_id = u.id
+                         left join t_user u on au.user_id = u.id
                 where au.user_id = ?""";
         Map<String, Object> user;
         if (id > 0) {
@@ -137,11 +137,11 @@ public class AdminUser {
         String sql = """
                 select u.id,
                        u.name    as name,
-                       au.roleId as roleId,
-                       ar.name   as roleName
-                from adminUsers au
-                         left join users u on au.userId = u.id
-                         left join adminRoles ar on au.roleId = ar.id""";
+                       au.role_id,
+                       ar.name   as role_name
+                from t_admin_user au
+                         left join t_user u on au.user_id = u.id
+                         left join t_admin_role ar on au.role_id = ar.id""";
         Pagination pagination = new Pagination(sql, page);
         for (var row : pagination.getRows()) {
             long roleId = Helper.longValue(row.get("roleId"));

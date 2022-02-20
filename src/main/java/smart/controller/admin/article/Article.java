@@ -132,11 +132,11 @@ public class Article {
         String sqlWhere = cateId > 0 ? "where a.cateId=" + cateId : "";
         String sql = """
                 select a.id,
-                       a.cate_id as cateId,
-                       ac.name as cateName,
+                       a.cate_id,
+                       ac.name as cate_name,
                        a.content,
                        a.title,
-                       a.release_time as releaseTime,
+                       a.release_time as release_time,
                        a.visible,
                        a.recommend
                 from t_article a

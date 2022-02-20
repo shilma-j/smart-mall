@@ -1,10 +1,5 @@
 package smart.controller.admin.other;
 
-import smart.cache.SystemCache;
-import smart.lib.AdminHelper;
-import smart.lib.Db;
-import smart.lib.Helper;
-import smart.lib.JsonResult;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import smart.cache.SystemCache;
+import smart.entity.SystemEntity;
+import smart.lib.AdminHelper;
+import smart.lib.Db;
+import smart.lib.Helper;
+import smart.lib.JsonResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -38,7 +39,7 @@ public class Static {
         if (jsVersion == null) {
             jsVersion = "";
         }
-        Db.update("system",
+        Db.update(Db.getTableNameByEntity(SystemEntity.class),
                 Map.of("entity", "sys", "attribute", "jsVersion"),
                 Map.of("value", jsVersion));
         SystemCache.setJsVersion(jsVersion);
