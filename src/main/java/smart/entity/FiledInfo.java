@@ -2,6 +2,9 @@ package smart.entity;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * 反射实体类的字段信息
+ */
 public final class FiledInfo {
     private Annotation[] annotations;
     // is primary key
