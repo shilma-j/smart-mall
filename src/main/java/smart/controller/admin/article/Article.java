@@ -1,10 +1,5 @@
 package smart.controller.admin.article;
 
-import smart.cache.ArticleCache;
-import smart.entity.ArticleEntity;
-import smart.lib.*;
-import smart.repository.ArticleCategoryRepository;
-import smart.repository.ArticleRepository;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import smart.cache.ArticleCache;
+import smart.entity.ArticleEntity;
+import smart.lib.*;
+import smart.repository.ArticleCategoryRepository;
+import smart.repository.ArticleRepository;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -145,8 +145,10 @@ public class Article {
                 order by a.release_time desc, a.recommend desc
                 """;
         sql = String.format(sql, sqlWhere);
-        Pagination pagination = new Pagination(sql, Helper.longValue(request.getParameter("page")),
-                Map.of("cateId", Long.toString(cateId)));
+        Pagination pagination = Pagination.newBuilder(sql)
+                .page(request)
+                .query(Map.of("cateId", Long.toString(cateId)))
+                .build();
         ModelAndView view = Helper.newModelAndView("admin/article/article/list", request);
         view.addObject("cateId", cateId);
         view.addObject("pagination", pagination);

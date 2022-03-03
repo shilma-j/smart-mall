@@ -1,5 +1,12 @@
 package smart.controller.admin.order;
 
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import smart.cache.ExpressCache;
 import smart.entity.OrderEntity;
 import smart.entity.OrderGoodsEntity;
@@ -10,13 +17,6 @@ import smart.lib.Pagination;
 import smart.repository.OrderGoodsRepository;
 import smart.repository.OrderRepository;
 import smart.service.OrderService;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -105,7 +105,7 @@ public class Order {
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
         String sql = """
-                SELECT 
+                SELECT
                     o.consignee,
                     o.create_time,
                     o.id,
@@ -121,7 +121,7 @@ public class Order {
                 LEFT JOIN t_user u ON o.user_id = u.id
                 ORDER BY o.id DESC
                 """;
-        Pagination pagination = new Pagination(sql, Helper.longValue(request.getParameter("page")));
+        Pagination pagination = Pagination.newBuilder(sql).page(request).build();
         ModelAndView modelAndView = Helper.newModelAndView("admin/order/order/list", request);
         modelAndView.addObject("pagination", pagination);
         modelAndView.addObject("title", "订单列表");

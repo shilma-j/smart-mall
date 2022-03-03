@@ -134,11 +134,10 @@ public class Order {
         if (deleted < 0 || deleted > 1) {
             deleted = 0;
         }
-        long page = Helper.longValue(request.getParameter("page"));
         ModelAndView modelAndView = Helper.newModelAndView("user/order/index", request);
         var sql = String.format("select * from t_order where user_id = %d and deleted = %d order by id desc",
                 userToken.getId(), deleted);
-        Pagination pagination = new Pagination(sql, null, 15, page, null);
+        Pagination pagination = Pagination.newBuilder(sql).page(request).pageSize(15).build();
         for (var row : pagination.getRows()) {
             row.put("goodsList", orderGoodsRepository.findAllByOrderNo(Helper.longValue(row.get("no"))));
         }

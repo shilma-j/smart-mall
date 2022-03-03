@@ -23,7 +23,7 @@ public class GoodsService {
      * @param sort       sort
      * @param page       page
      */
-    public Pagination getGoodsList(long categoryId, String keyword, String sort, int page) {
+    public Pagination getGoodsList(long categoryId, String keyword, String sort, long page) {
 
         StringBuilder sql = new StringBuilder("select id,imgs,name,price from t_goods where status & 0b10 > 0");
         CategoryEntity categoryEntity = CategoryCache.getEntityById(categoryId);
@@ -66,9 +66,10 @@ public class GoodsService {
                 sql.append("recommend desc,update_time desc,id desc");
             }
         }
-        Pagination pagination = new Pagination(sql.toString(), page,
-                Map.of("cid", Long.toString(categoryId), "q", keyword, "sort", sort));
-
+        Pagination pagination = Pagination.newBuilder(sql.toString())
+                .page(page)
+                .query(Map.of("cid", Long.toString(categoryId), "q", keyword, "sort", sort))
+                .build();
         String imgs;
         for (var row : pagination.getRows()) {
             imgs = (String) row.get("imgs");

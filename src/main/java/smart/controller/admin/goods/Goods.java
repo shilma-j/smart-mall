@@ -1,5 +1,12 @@
 package smart.controller.admin.goods;
 
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import smart.cache.BrandCache;
 import smart.cache.CategoryCache;
 import smart.cache.GoodsCache;
@@ -12,13 +19,6 @@ import smart.lib.*;
 import smart.lib.status.GoodsStatus;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -396,8 +396,9 @@ public class Goods {
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
         String sql = "select * from t_goods order by recommend desc,update_time desc,id desc";
-        Pagination pagination = new Pagination(sql,
-                Helper.longValue(request.getParameter("page"), 1L));
+        Pagination pagination = Pagination.newBuilder(sql)
+                .page(request)
+                .build();
         for (var row : pagination.getRows()) {
             String cateName = "";
             String img = "";

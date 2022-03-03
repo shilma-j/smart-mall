@@ -145,8 +145,7 @@ public class AdminRole {
     @GetMapping(value = "list")
     public ModelAndView getIndex(HttpServletRequest request) {
         ModelAndView modelAndView = Helper.newModelAndView("admin/sys/adminRole/list", request);
-        long page = Helper.longValue(request.getParameter("page"), 1);
-        Pagination pagination = new Pagination("select * from t_admin_role", page);
+        Pagination pagination = Pagination.newBuilder("select * from t_admin_role").page(request).build();
         modelAndView.addObject("pagination", pagination);
         modelAndView.addObject("title", "角色列表");
         return modelAndView;

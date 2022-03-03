@@ -1,9 +1,5 @@
 package smart.controller.admin.goods;
 
-import smart.cache.SpecCache;
-import smart.entity.SpecEntity;
-import smart.lib.*;
-import smart.repository.SpecRepository;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import smart.cache.SpecCache;
+import smart.entity.SpecEntity;
+import smart.lib.*;
+import smart.repository.SpecRepository;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -153,8 +153,9 @@ public class Spec {
 
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
-        Pagination pagination = new Pagination("select * from spec order by name,id",
-                Helper.longValue(request.getParameter("page")));
+        Pagination pagination = Pagination.newBuilder("select * from spec order by name,id")
+                .page(request)
+                .build();
         ModelAndView modelAndView = Helper.newModelAndView("admin/goods/spec/list", request);
         pagination.getRows().forEach(row -> {
             String str = (String) row.get("list");

@@ -131,7 +131,6 @@ public class AdminUser {
 
     @GetMapping(value = "list")
     public ModelAndView getIndex(HttpServletRequest request) {
-        long page = Helper.longValue(request.getParameter("page"), 1);
         ModelAndView modelAndView = Helper.newModelAndView("admin/sys/adminUser/list", request);
         modelAndView.addObject("title", "管理员列表");
         String sql = """
@@ -142,7 +141,7 @@ public class AdminUser {
                 from t_admin_user au
                          left join t_user u on au.user_id = u.id
                          left join t_admin_role ar on au.role_id = ar.id""";
-        Pagination pagination = new Pagination(sql, page);
+        Pagination pagination = Pagination.newBuilder(sql).page(request).build();
         for (var row : pagination.getRows()) {
             long roleId = Helper.longValue(row.get("roleId"));
             if (roleId == 0) {

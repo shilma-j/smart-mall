@@ -1,12 +1,11 @@
 package smart.lib;
 
-import smart.entity.BaseEntity;
-import smart.entity.FiledInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import smart.entity.BaseEntity;
+import smart.entity.FiledInfo;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -213,7 +212,7 @@ public class Db {
         }
         name = name.toLowerCase();
         StringBuilder builder = new StringBuilder(name);
-        for (int i = 2; i < builder.length();) {
+        for (int i = 2; i < builder.length(); ) {
             if (builder.charAt(i - 1) == '_') {
                 builder.replace(i - 1, i + 1, String.valueOf(builder.charAt(i)).toUpperCase());
             } else {

@@ -1,16 +1,16 @@
 package smart.controller.admin.user;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import smart.entity.UserEntity;
 import smart.lib.AdminHelper;
 import smart.lib.Helper;
 import smart.lib.Pagination;
 import smart.lib.Validate;
 import smart.repository.UserRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +67,8 @@ public class User {
         if (sqlWhere.startsWith(" and ")) {
             sqlWhere = " where " + sqlWhere.substring(4);
         }
-        Pagination pagination = new Pagination("select * from t_user" + sqlWhere + " order by id desc", params.toArray(), page, query);
+        Pagination pagination = Pagination.newBuilder("select * from t_user" + sqlWhere + " order by id desc", params.toArray())
+                .page(request).query(query).build();
         pagination.getRows().forEach(item -> {
             BigInteger surplus = (BigInteger) item.get("surplus");
             item.put("surplus", Helper.priceFormat(surplus.longValue()));

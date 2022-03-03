@@ -1,5 +1,12 @@
 package smart.controller.admin.goods;
 
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import smart.cache.BrandCache;
 import smart.config.AppConfig;
 import smart.entity.BrandEntity;
@@ -8,13 +15,6 @@ import smart.lib.Helper;
 import smart.lib.JsonResult;
 import smart.lib.Pagination;
 import smart.repository.BrandRepository;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -109,8 +109,9 @@ public class Brand {
 
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
-        Pagination pagination = new Pagination("select * from t_brand order by name",
-                Helper.longValue(request.getParameter("page")));
+        Pagination pagination = Pagination.newBuilder("select * from t_brand order by name")
+                .page(request)
+                .build();
         ModelAndView modelAndView = Helper.newModelAndView("admin/goods/brand/list", request);
         modelAndView.addObject("pagination", pagination);
         modelAndView.addObject("title", "商品品牌");

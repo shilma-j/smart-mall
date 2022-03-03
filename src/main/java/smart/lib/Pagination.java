@@ -1,7 +1,10 @@
 package smart.lib;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import smart.config.AppConfig;
+import smart.entity.BaseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -11,7 +14,7 @@ import java.util.regex.Pattern;
 /**
  * 分页类
  */
-public class Pagination {
+public final class Pagination {
     private static final Pattern patternSelect = Pattern.compile("^(\\s*select.+)\\sfrom\\s+",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
     private static final Pattern patternOrderBy = Pattern.compile("(\\sorder\\s+by\\s+.+)$",
@@ -20,7 +23,7 @@ public class Pagination {
     private final Object[] params;
     private final String sql;
     private final List<Map<String, Object>> pages = new LinkedList<>();
-    private long currentPage = 1;
+    private long currentPage;
     private List<Map<String, Object>> rows;
     /**
      * http get method query
@@ -28,67 +31,28 @@ public class Pagination {
     private String httpQuery = "?";
     private long startIndex;
     private long endIndex;
-    private long totalPages = 0;
+    private long totalPages;
     private long totalRecords = 0;
 
     /**
      * 初始化分页类
      *
-     * @param sql  select语句
-     * @param page 当前页
+     * @param builder builder
      */
-    public Pagination(String sql, long page) {
-        this(sql, null, 20, page, null);
-    }
-
-    /**
-     * 初始化分页类
-     *
-     * @param sql   select语句
-     * @param page  当前页
-     * @param query 附加的http url get参数
-     */
-    public Pagination(String sql, long page, Map<String, String> query) {
-        this(sql, null, 20, page, query);
-    }
-
-    /**
-     * 初始化分页类
-     *
-     * @param sql    select语句
-     * @param params sql语句参数绑定
-     * @param page   当前页
-     * @param query  附加的http url get参数
-     */
-    public Pagination(String sql, Object[] params, long page, Map<String, String> query) {
-        this(sql, params, 20, page, query);
-    }
-
-    /**
-     * 初始化分页类
-     *
-     * @param sql      select语句
-     * @param params   sql语句参数绑定
-     * @param pageSize 每页显示多少条
-     * @param page     当前页
-     * @param query    附加的http url get参数
-     */
-    public Pagination(String sql, Object[] params, long pageSize, long page, Map<String, String> query) {
-        this.sql = sql;
-        this.params = params;
-        this.pageSize = pageSize;
-        if (query != null) {
-            query.forEach((k, v) -> {
-                httpQuery += String.format("%s=%s&",
-                        URLEncoder.encode(k, StandardCharsets.UTF_8), URLEncoder.encode(v, StandardCharsets.UTF_8));
-            });
+    private Pagination(Builder builder) {
+        this.sql = builder.sql;
+        this.params = builder.params;
+        this.pageSize = builder.pageSize;
+        if (builder.query != null) {
+            builder.query.forEach((k, v) -> httpQuery += String.format("%s=%s&",
+                    URLEncoder.encode(k, StandardCharsets.UTF_8), URLEncoder.encode(v, StandardCharsets.UTF_8)));
         }
         initTotalRecords();
         totalPages = totalRecords / pageSize;
         if (totalRecords % pageSize > 0) {
             totalPages++;
         }
-        currentPage = page > 0 ? page : 1;
+        currentPage = builder.page < 0 ? builder.page : 1;
         if (currentPage > totalPages) {
             currentPage = totalPages;
         }
@@ -133,6 +97,17 @@ public class Pagination {
     }
 
     /**
+     * new builder
+     *
+     * @param sql    查询sql
+     * @param params 参数
+     * @return builder
+     */
+    public static Builder newBuilder(String sql, Object... params) {
+        return new Builder().sql(sql, params);
+    }
+
+    /**
      * 获取当前页的记录
      *
      * @return 当前页记录
@@ -153,9 +128,7 @@ public class Pagination {
         rows = new ArrayList<>();
         AppConfig.getJdbcTemplate().queryForList(sql1, params).forEach(row -> {
             Map<String, Object> row1 = new LinkedHashMap<>();
-            row.keySet().forEach(key->{
-                row1.put(Db.underscoresToCamelCaseNaming(key), row.get(key));
-            });
+            row.keySet().forEach(key -> row1.put(Db.underscoresToCamelCaseNaming(key), row.get(key)));
             rows.add(row1);
         });
 
@@ -298,6 +271,88 @@ public class Pagination {
         } else {
             Long count = AppConfig.getJdbcTemplate().queryForObject(countSql, Long.class, params);
             totalRecords = count == null ? 0 : count;
+        }
+    }
+
+    public static final class Builder {
+        private long pageSize = 20;
+        private long page = 1;
+        private Map<String, String> query = null;
+        private String sql = null;
+        private Object[] params = null;
+
+
+        public Pagination build() {
+            return new Pagination(this);
+        }
+
+        /**
+         * 设置当前页
+         *
+         * @param page 当前页
+         * @return this
+         */
+        public Builder page(long page) {
+            this.page = page;
+            return this;
+        }
+
+        /**
+         * 从http request 中读取当前页,参数名 page
+         *
+         * @param request http request
+         * @return this
+         */
+        public Builder page(HttpServletRequest request) {
+            page(Helper.longValue(request.getParameter("page")));
+            return this;
+        }
+
+        /**
+         * 从http request 中读取当前页
+         *
+         * @param request http request
+         * @param name    request name
+         * @return this
+         */
+        public Builder page(HttpServletRequest request, String name) {
+            page(Helper.longValue(request.getParameter(name)));
+            return this;
+        }
+
+        /**
+         * 设置每页记录数
+         *
+         * @param pageSize 每页记录数
+         * @return this
+         */
+        public Builder pageSize(long pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
+        /**
+         * http 查询参数，在生成html页脚时使用
+         *
+         * @param query http query
+         * @return this
+         */
+        public Builder query(Map<String, String> query) {
+            this.query = query;
+            return this;
+        }
+
+        /**
+         * 查询sql
+         *
+         * @param sql    sql
+         * @param params 参数
+         * @return this
+         */
+        public Builder sql(String sql, Object... params) {
+            this.sql = sql;
+            this.params = params;
+            return this;
         }
     }
 }

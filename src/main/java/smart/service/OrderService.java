@@ -296,7 +296,7 @@ public class OrderService {
      */
     public Pagination getUserOrders(long userId, long pageSize, long page, String keyWord, boolean isDeleted, OrderStatus orderStatus) {
         String sql = "select id, no, user_id as userId,region from t_order";
-        Pagination pagination = new Pagination("", 0);
+        Pagination pagination = Pagination.newBuilder(null).build();
         return pagination;
     }
 
