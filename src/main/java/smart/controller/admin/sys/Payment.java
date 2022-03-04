@@ -31,7 +31,7 @@ public class Payment {
         if (paymentEntity == null) {
             return AdminHelper.msgPage("支付方式不存在:" + name, null, request);
         }
-        String json = Crypto.decrypt(paymentEntity.getConfig());
+        String json = Security.decrypt(paymentEntity.getConfig());
         if (json == null || json.length() < 10) {
             json = "{}";
         }
@@ -66,7 +66,7 @@ public class Payment {
                 name,
                 Helper.intValue(request.getParameter("enable")) > 0,
                 Helper.intValue(request.getParameter("recommend")),
-                Crypto.encrypt(config)
+                Security.encrypt(config)
         );
         PaymentCache.init();
         return jsonResult.setMsg("保存成功").setUrl("/admin/sys/payment/list").toString();

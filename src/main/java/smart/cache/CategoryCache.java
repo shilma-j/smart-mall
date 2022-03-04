@@ -1,20 +1,19 @@
 package smart.cache;
 
-import smart.entity.CategoryEntity;
-import smart.lib.Json;
-import smart.service.CategoryService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import smart.entity.CategoryEntity;
+import smart.lib.Json;
+import smart.service.CategoryService;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 商品类别缓存
  */
-@Component("CategoryCache")
+@Component
 public class CategoryCache {
     private static Map<Long, List<CategoryEntity>> categoryPaths;
     private static Map<Long, List<CategoryEntity>> childrenMap;
@@ -66,19 +65,19 @@ public class CategoryCache {
         Map<Long, List<CategoryEntity>> childrenMap1 = new HashMap<>();
         for (var row : rows) {
             List<CategoryEntity> list = new ArrayList<>();
-            List<CategoryEntity> list1 = rows.stream().filter(item -> item.getParentId() == row.getId()).collect(Collectors.toList());
+            List<CategoryEntity> list1 = rows.stream().filter(item -> item.getParentId() == row.getId()).toList();
             List<CategoryEntity> list2 = new ArrayList<>();
             List<CategoryEntity> list3 = new ArrayList<>();
             if (list1.size() > 0) {
                 list.addAll(list1);
                 for (var item : list1) {
-                    list2.addAll(rows.stream().filter(item1 -> item1.getParentId() == item.getId()).collect(Collectors.toList()));
+                    list2.addAll(rows.stream().filter(item1 -> item1.getParentId() == item.getId()).toList());
                 }
             }
             if (list2.size() > 0) {
                 list.addAll(list2);
                 for (var item : list2) {
-                    list3.addAll(rows.stream().filter(item2 -> item2.getParentId() == item.getId()).collect(Collectors.toList()));
+                    list3.addAll(rows.stream().filter(item2 -> item2.getParentId() == item.getId()).toList());
                 }
             }
             list.addAll(list3);

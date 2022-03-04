@@ -1,5 +1,6 @@
 package smart.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,6 +18,7 @@ public class UserEntity extends BaseEntity {
     @Id
     private long id;
     private String lastLoginIp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp lastLoginTime;
     private int level = 0;
     private String phone;
@@ -26,6 +28,7 @@ public class UserEntity extends BaseEntity {
     private long status = 0;
     private long surplus = 0;
     private String registerIp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp registerTime;
     private String salt;
 

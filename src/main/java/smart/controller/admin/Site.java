@@ -1,7 +1,7 @@
 package smart.controller.admin;
 
 import smart.config.AppConfig;
-import smart.lib.Crypto;
+import smart.lib.Security;
 import smart.lib.Helper;
 import smart.lib.JsonResult;
 import smart.lib.session.Session;
@@ -77,7 +77,7 @@ public class Site {
             }
         }
 
-        String uri = Crypto.sha3_256(file.getInputStream()) + Long.toHexString(file.getSize());
+        String uri = Security.sha3_256(file.getInputStream()) + Long.toHexString(file.getSize());
         uri = new BigInteger(uri, 16).toString(36);
         uri = uri.substring(0, 2) + "/" + uri.substring(2, 4) + "/" + uri.substring(4);
 

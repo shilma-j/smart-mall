@@ -52,7 +52,7 @@ public final class Pagination {
         if (totalRecords % pageSize > 0) {
             totalPages++;
         }
-        currentPage = builder.page < 0 ? builder.page : 1;
+        currentPage = builder.page > 0 ? builder.page : 1;
         if (currentPage > totalPages) {
             currentPage = totalPages;
         }
@@ -114,6 +114,13 @@ public final class Pagination {
      */
     public List<Map<String, Object>> getRows() {
         return rows;
+    }
+
+    public <T extends BaseEntity> List<T> getRows(Class<T> t) {
+        ObjectMapper mapper = AppConfig.getContext().getBean(ObjectMapper.class);
+        List<T> result = new ArrayList<>();
+        rows.forEach(row -> result.add(mapper.convertValue(row, t)));
+        return result;
     }
 
     /**

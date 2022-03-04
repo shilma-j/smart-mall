@@ -3,7 +3,7 @@ package smart.controller.admin.sys;
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
 import smart.lib.AdminHelper;
-import smart.lib.Crypto;
+import smart.lib.Security;
 import smart.lib.Helper;
 import smart.lib.JsonResult;
 import org.springframework.http.MediaType;
@@ -80,8 +80,8 @@ public class Manage {
         AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='sys' and attribute='url'",
                 map.get("siteUrl").replaceAll(" ", "").replaceAll("[/\\\\]+$", ""));
         AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='type'", map.get("storageType"));
-        AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossAk'", Crypto.encrypt(map.get("ossAk")));
-        AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossAks'", Crypto.encrypt(map.get("ossAks")));
+        AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossAk'", Security.encrypt(map.get("ossAk")));
+        AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossAks'", Security.encrypt(map.get("ossAks")));
         AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossBucket'", map.get("ossBucket"));
         AppConfig.getJdbcTemplate().update("update t_system set value=? where entity='storage' and attribute='ossBucketUrl'",
                 map.get("ossBucketUrl").replaceAll(" ", "").replaceAll("[/\\\\]+$", ""));

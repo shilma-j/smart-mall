@@ -1,8 +1,8 @@
 package smart.controller;
 
-import smart.lib.Json;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import smart.lib.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -30,6 +30,27 @@ public class Api {
     @GetMapping("test")
     public String getTest(HttpServletRequest request) {
         return null;
+    }
+
+    public static class Pojo {
+        private Long id;
+        private String name;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
 }

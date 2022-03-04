@@ -15,7 +15,6 @@ import smart.repository.UserRepository;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -69,14 +68,11 @@ public class User {
         }
         Pagination pagination = Pagination.newBuilder("select * from t_user" + sqlWhere + " order by id desc", params.toArray())
                 .page(request).query(query).build();
-        pagination.getRows().forEach(item -> {
-            BigInteger surplus = (BigInteger) item.get("surplus");
-            item.put("surplus", Helper.priceFormat(surplus.longValue()));
-        });
         ModelAndView modelAndView = Helper.newModelAndView("admin/user/user/list", request);
         modelAndView.addObject("title", "会员列表");
         modelAndView.addObject("name", name);
         modelAndView.addObject("pagination", pagination);
+        modelAndView.addObject("rows", pagination.getRows(UserEntity.class));
         return modelAndView;
     }
 

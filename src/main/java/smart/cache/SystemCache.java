@@ -1,11 +1,10 @@
 package smart.cache;
 
-import smart.lib.Crypto;
+import smart.lib.Security;
 import smart.lib.Helper;
 import smart.lib.Json;
 import smart.repository.SystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component("SystemCache")
-@DependsOn("Crypto")
 public class SystemCache {
     //备案号
     private static String beian;
@@ -74,8 +72,8 @@ public class SystemCache {
             if (entity.getEntity().equals("storage")) {
                 switch (entity.getAttribute()) {
                     case "type" -> storageType = entity.getValue();
-                    case "ossAk" -> ossAk = Crypto.decrypt(entity.getValue());
-                    case "ossAks" -> ossAks = Crypto.decrypt(entity.getValue());
+                    case "ossAk" -> ossAk = Security.decrypt(entity.getValue());
+                    case "ossAks" -> ossAks = Security.decrypt(entity.getValue());
                     case "ossBucket" -> ossBucket = entity.getValue();
                     case "ossBucketUrl" -> ossBucketUrl = entity.getValue();
                     case "ossEndpoint" -> ossEndpoint = entity.getValue();

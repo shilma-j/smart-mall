@@ -153,7 +153,7 @@ public class Spec {
 
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
-        Pagination pagination = Pagination.newBuilder("select * from spec order by name,id")
+        Pagination pagination = Pagination.newBuilder("select * from t_spec order by name,id")
                 .page(request)
                 .build();
         ModelAndView modelAndView = Helper.newModelAndView("admin/goods/spec/list", request);

@@ -1,20 +1,18 @@
 package smart.cache;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import smart.config.AppConfig;
 import smart.entity.ExpressCompanyEntity;
 import smart.lib.Json;
 import smart.lib.express.FreeRule;
 import smart.lib.express.PriceRule;
 import smart.repository.ExpressCompanyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
-@DependsOn("AppConfig")
 public class ExpressCache {
     private static List<ExpressCompanyEntity> companies;
     private static ExpressCompanyRepository expressCompanyRepository;

@@ -2,7 +2,7 @@ package smart.service;
 
 import smart.authentication.UserToken;
 import smart.entity.UserEntity;
-import smart.lib.Crypto;
+import smart.lib.Security;
 import smart.lib.Db;
 import smart.lib.Helper;
 import smart.lib.Validate;
@@ -29,7 +29,7 @@ public class UserService {
     @Transactional
     public String editPassword(Long uid, String password, String ip) {
         String salt = Helper.randomString(4);
-        if (userRepository.updateForPassword(uid, Crypto.sha3_256(password + salt), salt) == 0) {
+        if (userRepository.updateForPassword(uid, Security.sha3_256(password + salt), salt) == 0) {
             return null;
         }
         return salt;
@@ -53,7 +53,7 @@ public class UserService {
             return result;
         }
         long uid = userEntity.getId();
-        password = Crypto.sha3_256(password + userEntity.getSalt());
+        password = Security.sha3_256(password + userEntity.getSalt());
         if (!password.equals(userEntity.getPassword())) {
             return result;
         }
@@ -99,7 +99,7 @@ public class UserService {
         String salt = Helper.randomString(4);
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);
-        userEntity.setPassword(Crypto.sha3_256(password + salt));
+        userEntity.setPassword(Security.sha3_256(password + salt));
         userEntity.setSalt(salt);
         userEntity.setRegisterTime(new Timestamp(System.currentTimeMillis()));
         userEntity.setRegisterIp(registerIp);

@@ -27,10 +27,10 @@ import static smart.lib.Helper.bytesToHex;
 /**
  * 安全助手函数
  */
-@Component("Crypto")
-public class Crypto {
+@Component
+public class Security {
 
-    private static final Log log = LogFactory.getLog(Crypto.class);
+    private static final Log log = LogFactory.getLog(Security.class);
     private static final String KEY_ALGORITHM = "AES";
     // AES加密算法
     private static final String CIPHER_ALGORITHM = "AES/GCM/NoPadding";

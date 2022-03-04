@@ -141,6 +141,10 @@ public class Helper {
         return array[0].trim();
     }
 
+    public static DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
+    }
+
     /**
      * 获取错误页面html
      *
@@ -190,7 +194,7 @@ public class Helper {
     /**
      * get long value from object
      *
-     * @param o
+     * @param o object
      * @return int
      */
     public static int intValue(Object o) {
@@ -243,7 +247,7 @@ public class Helper {
     /**
      * get long value from object
      *
-     * @param o
+     * @param o object
      * @return long
      */
     public static long longValue(Object o) {

@@ -1,5 +1,6 @@
 package smart.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,7 +19,9 @@ public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
     private long id;
     private long brandId;
     private long cateId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp updateTime;
     private String name;
     @Column(columnDefinition = "text")

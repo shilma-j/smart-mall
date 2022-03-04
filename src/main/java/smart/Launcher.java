@@ -1,12 +1,13 @@
 package smart;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import smart.cache.GoodsCache;
 import smart.config.AppConfig;
 import smart.lib.Helper;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+@DependsOn({"appConfig", "json", "security"})
 @EnableScheduling
 @SpringBootApplication
 public class Launcher {

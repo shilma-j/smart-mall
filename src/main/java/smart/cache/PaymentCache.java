@@ -1,6 +1,6 @@
 package smart.cache;
 
-import smart.lib.Crypto;
+import smart.lib.Security;
 import smart.lib.Json;
 import smart.lib.payment.Alipay;
 import smart.lib.payment.Payment;
@@ -35,7 +35,7 @@ public class PaymentCache {
         List<Payment> list = new LinkedList<>();
 
         paymentRepository.findAvailable().forEach(row -> {
-            String config = Crypto.decrypt(row.getConfig());
+            String config = Security.decrypt(row.getConfig());
             if (config == null) {
                 log.error("decrypt payment config failure, payment name: %s" + row.getName());
                 return;

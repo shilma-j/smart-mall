@@ -2,8 +2,10 @@ package smart.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -12,16 +14,14 @@ import java.util.Map;
 /**
  * json 助手类
  */
+@Component
 public class Json {
+    private static ObjectMapper mapper;
+    private final Log log = LogFactory.getLog(Json.class);
 
-    /**
-     * 线程变量 object mapper
-     */
-    private static final ThreadLocal<ObjectMapper> om = ThreadLocal.withInitial(() -> {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper;
-    });
+    public Json(ObjectMapper objectMapper) {
+        mapper = objectMapper;
+    }
 
     /**
      * json 字符串转 map
@@ -33,29 +33,13 @@ public class Json {
 
         Map<String, String> map = null;
         try {
-            map = om.get().readValue(str, new TypeReference<>() {
+            map = mapper.readValue(str, new TypeReference<>() {
             });
         } catch (JsonProcessingException ignored) {
         }
         return map;
     }
 
-    /**
-     * json 字符串转 map
-     *
-     * @param str json字符串
-     * @return map
-     */
-    public static Map<String, Object> decode1(String str) {
-
-        Map<String, Object> map = null;
-        try {
-            map = om.get().readValue(str, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException ignored) {
-        }
-        return map;
-    }
 
     /**
      * json字符串转对象实列
@@ -67,7 +51,7 @@ public class Json {
      */
     public static <T> T decode(String str, Class<T> tClass) {
         try {
-            return om.get().readValue(str, tClass);
+            return mapper.readValue(str, tClass);
         } catch (JsonProcessingException ignored) {
         }
         return null;
@@ -81,7 +65,7 @@ public class Json {
      */
     public static String encode(Object value) {
         try {
-            return om.get().writeValueAsString(value);
+            return mapper.writeValueAsString(value);
         } catch (JsonProcessingException ignored) {
         }
         return null;
@@ -97,7 +81,7 @@ public class Json {
 
         List<Map<String, String>> list = null;
         try {
-            list = om.get().readValue(str, new TypeReference<>() {
+            list = mapper.readValue(str, new TypeReference<>() {
             });
         } catch (JsonProcessingException ignored) {
         }
@@ -115,8 +99,8 @@ public class Json {
     public static <T> List<T> toList(String str, Class<T> tClass) {
         List<T> list = null;
         try {
-            list = om.get().readValue(str,
-                    om.get().getTypeFactory().constructParametricType(List.class, tClass));
+            list = mapper.readValue(str,
+                    mapper.getTypeFactory().constructParametricType(List.class, tClass));
         } catch (JsonProcessingException ignored) {
         }
         return list;

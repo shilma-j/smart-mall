@@ -159,7 +159,7 @@ public class Site {
             jsonResult.error.put("password1", "重复密码与新密码不一致");
         }
         if (jsonResult.error.size() == 0) {
-            String hash = Crypto.sha3_256(oldPassword + userToken.getSalt());
+            String hash = Security.sha3_256(oldPassword + userToken.getSalt());
             if (!userToken.getPassword().equals(hash)) {
                 jsonResult.error.put("oldPassword", "原密码错误");
             }
@@ -170,7 +170,7 @@ public class Site {
             if (salt != null) {
                 jsonResult.setMsg("修改成功");
                 jsonResult.setUrl("/user/central");
-                userToken.setPassword(Crypto.sha3_256(password + salt));
+                userToken.setPassword(Security.sha3_256(password + salt));
                 userToken.setSalt(salt);
                 userToken.save(session);
             } else {
