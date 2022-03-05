@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component("SystemCache")
+@Component
 public class SystemCache {
     //备案号
     private static String beian;

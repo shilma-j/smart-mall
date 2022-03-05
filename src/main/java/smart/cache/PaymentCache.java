@@ -1,15 +1,14 @@
 package smart.cache;
 
-import smart.lib.Security;
-import smart.lib.Json;
-import smart.lib.payment.Alipay;
-import smart.lib.payment.Payment;
-import smart.repository.PaymentRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import smart.lib.Json;
+import smart.lib.Security;
+import smart.lib.payment.Alipay;
+import smart.lib.payment.Payment;
+import smart.repository.PaymentRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.LinkedList;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@DependsOn("SystemCache")
 public class PaymentCache {
 
     private static final Log log = LogFactory.getLog(PaymentCache.class);
