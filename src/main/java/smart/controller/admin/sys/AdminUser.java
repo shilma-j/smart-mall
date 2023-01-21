@@ -16,9 +16,9 @@ import smart.lib.*;
 import smart.repository.AdminRoleRepository;
 import smart.repository.UserRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 

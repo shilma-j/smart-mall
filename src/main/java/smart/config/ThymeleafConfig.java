@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Configuration
 public class ThymeleafConfig {

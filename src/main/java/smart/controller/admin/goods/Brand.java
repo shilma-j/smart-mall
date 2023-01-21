@@ -16,9 +16,9 @@ import smart.lib.JsonResult;
 import smart.lib.Pagination;
 import smart.repository.BrandRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Controller(value = "admin/goods/brand")
 @RequestMapping(path = "/admin/goods/brand")

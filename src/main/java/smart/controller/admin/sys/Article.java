@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Controller(value = "admin/sys/article")
 @RequestMapping(path = "/admin/sys/article")

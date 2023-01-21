@@ -1,5 +1,6 @@
 package smart.controller;
 
+import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,10 @@ import smart.lib.Pagination;
 import smart.lib.session.Session;
 import smart.service.GoodsService;
 
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 
 @Controller
@@ -34,7 +34,7 @@ public class Site {
      * @param request request
      * @return view
      */
-    @GetMapping(value = "")
+    @GetMapping(value = "/")
     public ModelAndView getIndex(HttpServletRequest request) {
         ModelAndView modelAndView = Helper.newModelAndView("index", request);
         modelAndView.addObject("carouselList", SystemCache.getCarouselList());

@@ -1,16 +1,14 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
 import smart.config.AppConfig;
 import smart.entity.OrderGoodsEntity;
-import smart.lib.Db;
 import smart.repository.OrderGoodsRepository;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.HashMap;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderGoodsService {

@@ -10,7 +10,7 @@ import smart.lib.payment.Alipay;
 import smart.lib.payment.Payment;
 import smart.repository.PaymentRepository;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

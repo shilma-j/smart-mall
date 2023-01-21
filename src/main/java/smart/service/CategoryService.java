@@ -1,11 +1,11 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
 import smart.entity.CategoryEntity;
 import smart.repository.CategoryRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Service

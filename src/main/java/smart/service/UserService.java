@@ -12,9 +12,9 @@ import smart.repository.UserRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,7 +1,7 @@
 app:
   # 是否为开发者模式
   # 开发者模式下不启用模板缓存
-  devMode: false
+  devMode: true
   # AES密钥
   key: key1
 
@@ -9,7 +9,7 @@ logging:
   file:
     name: logs/run.log
   logback:
-    rollingpolicy:
+    rolling policy:
       clean-history-on-start: true
       file-name-pattern: '${LOG_FILE}.%d{yyMM}.%i.log'
       max-file-size: 100MB
@@ -21,7 +21,7 @@ server:
     enabled: false
   port: 8080
   tomcat:
-    accesslog:
+    access-log:
       enabled: true
       file-date-format: '.yyMMdd'
       max-days: 365
@@ -33,8 +33,8 @@ server:
       protocol-header: X-Forwarded-Proto
     # 视业务类型 cpu core * (4-10)
     threads:
-      min-spare: 8
-      max: 8
+      min-spare: 4
+      max: 4
   servlet:
     encoding:
       charset: UTF-8
@@ -42,12 +42,13 @@ server:
     session:
       # 留空,禁用跟踪模式
       tracking-modes:
-
 spring:
   data:
     redis:
       repositories:
         enabled: false
+      database: 0
+      host: 10.1.0.8
   datasource:
     url: jdbc:mysql://127.0.0.1/smart
     username: user
@@ -67,15 +68,6 @@ spring:
   mvc:
     servlet:
       load-on-startup: 1
-  redis:
-    database: 0
-    host: 127.0.0.1
-    port: 6379
-    client-type: lettuce
-    lettuce:
-      pool:
-        # 2(dev mode) - 8 or more
-        max-active: 2
 
   servlet:
     multipart:

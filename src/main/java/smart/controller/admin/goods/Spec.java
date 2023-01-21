@@ -12,9 +12,9 @@ import smart.entity.SpecEntity;
 import smart.lib.*;
 import smart.repository.SpecRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;

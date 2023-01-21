@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="__${theme}__/components::head">
+<head th:replace="_~{_${theme}__/components::head}">
     <title th:text="${siteName}"></title>
 </head>
 <body>
-<header th:replace="__${theme}__/components::header">
+<header th:replace="~{__${theme}__/components::header}">
 </header>
 
 <div class="row">
@@ -17,6 +17,6 @@
 
 </div>
 
-<footer th:replace="__${theme}__/components::footer"></footer>
+<footer th:replace="~{__${theme}__/components::footer}"></footer>
 </body>
 </html>

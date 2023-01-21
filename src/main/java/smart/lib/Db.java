@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import smart.entity.BaseEntity;
 import smart.entity.FiledInfo;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 

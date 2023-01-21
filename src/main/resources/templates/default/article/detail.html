@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<head th:replace="__${theme}__/components::head">
+<head th:replace="_~{_${theme}__/components::head}">
 </head>
 <body class="article-list">
-<header th:replace="__${theme}__/components::header"></header>
+<header th:replace="~{__${theme}__/components::header}"></header>
 <div class="page-main">
     <div class="container">
         <nav aria-label="breadcrumb">
@@ -34,6 +34,6 @@
     </div>
 </div>
 
-<footer th:replace="__${theme}__/components::footer"></footer>
+<footer th:replace="~{__${theme}__/components::footer}"></footer>
 </body>
 </html>

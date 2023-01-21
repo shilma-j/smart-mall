@@ -1,13 +1,13 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
 import smart.config.AppConfig;
 import smart.entity.UserAddressEntity;
 import smart.lib.Db;
 import smart.repository.UserAddressRepository;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserAddressService {

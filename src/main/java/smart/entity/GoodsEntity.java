@@ -5,7 +5,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;

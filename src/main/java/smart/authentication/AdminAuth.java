@@ -1,5 +1,6 @@
 package smart.authentication;
 
+import jakarta.annotation.Resource;
 import smart.config.AdminAuthority;
 import smart.config.AdminMenu;
 import smart.lib.Helper;
@@ -10,8 +11,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component

@@ -4,12 +4,12 @@
     <link rel="stylesheet" th:href="${#helpers.retouch('/theme/' + theme + '/cart.css')}">
 </head>
 <body>
-<header th:replace="__${theme}__/components::header" />
+<header th:replace="~{__${theme}__/components::header}" />
 <div class="container-fluid">
     <div class="container">
 
     </div>
 </div>
-<footer th:replace="__${theme}__/components::footer" />
+<footer th:replace="~{__${theme}__/components::footer}" />
 </body>
 </html>

@@ -1,11 +1,11 @@
 package smart.cache;
 
+import jakarta.annotation.PostConstruct;
 import smart.lib.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 

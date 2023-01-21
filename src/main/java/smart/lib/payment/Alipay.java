@@ -10,7 +10,7 @@ import com.alipay.easysdk.kernel.util.ResponseChecker;
 import com.alipay.easysdk.payment.common.models.AlipayTradeRefundResponse;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 

@@ -1,9 +1,8 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
 import smart.repository.AdminRoleRepository;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class AdminRoleService {

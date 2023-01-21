@@ -10,7 +10,7 @@ import smart.lib.status.GoodsStatus;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;

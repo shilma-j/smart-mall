@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="__${theme}__/components::head">
+<head th:replace="_~{_${theme}__/components::head}">
     <title th:text="${siteName}"></title>
 </head>
 <body>
@@ -9,6 +9,6 @@
 
 
 
-<footer th:replace="__${theme}__/components::footer"></footer>
+<footer th:replace="~{__${theme}__/components::footer}"></footer>
 </body>
 </html>

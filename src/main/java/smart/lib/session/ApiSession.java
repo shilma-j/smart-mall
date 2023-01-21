@@ -2,7 +2,7 @@ package smart.lib.session;
 
 import smart.config.RedisConfig;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;

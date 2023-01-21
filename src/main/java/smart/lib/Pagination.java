@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import smart.config.AppConfig;
 import smart.entity.BaseEntity;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

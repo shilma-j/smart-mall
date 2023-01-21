@@ -4,7 +4,7 @@ import smart.lib.ApiJsonResult;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.Map;
 
 

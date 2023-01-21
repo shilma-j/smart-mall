@@ -1,5 +1,6 @@
 package smart.controller.admin.article;
 
+import jakarta.annotation.Resource;
 import smart.cache.ArticleCache;
 import smart.config.AppConfig;
 import smart.entity.ArticleCategoryEntity;
@@ -16,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Controller(value = "admin/article/category")
 @RequestMapping(path = "/admin/article/category")

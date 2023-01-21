@@ -20,9 +20,9 @@ import smart.lib.status.GoodsStatus;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;

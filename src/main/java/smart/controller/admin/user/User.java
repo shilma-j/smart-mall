@@ -12,9 +12,9 @@ import smart.lib.Pagination;
 import smart.lib.Validate;
 import smart.repository.UserRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;

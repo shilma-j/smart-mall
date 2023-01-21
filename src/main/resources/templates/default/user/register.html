@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="__${theme}__/components::head(link=~{::link})">
+<head th:replace="~{__${theme}__/components::head(link=~{::link})}">
     <link rel="stylesheet" th:href="${#helpers.retouch('/theme/' + theme + '/user.css')}">
 </head>
 <body>
-<header th:replace="__${theme}__/components::header"></header>
+<header th:replace="~{__${theme}__/components::header}"></header>
 <div class="container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -58,6 +58,6 @@
 </div>
 <br>
 
-<footer th:replace="__${theme}__/components::footer"></footer>
+<footer th:replace="~{__${theme}__/components::footer}"></footer>
 </body>
 </html>

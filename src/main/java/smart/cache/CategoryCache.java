@@ -7,7 +7,7 @@ import smart.entity.CategoryEntity;
 import smart.lib.Json;
 import smart.service.CategoryService;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.*;
 
 /**

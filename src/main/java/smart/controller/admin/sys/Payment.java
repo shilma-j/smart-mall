@@ -1,5 +1,6 @@
 package smart.controller.admin.sys;
 
+import jakarta.annotation.Resource;
 import smart.cache.PaymentCache;
 import smart.entity.PaymentEntity;
 import smart.lib.*;
@@ -9,9 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

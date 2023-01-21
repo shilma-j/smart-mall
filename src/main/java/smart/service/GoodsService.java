@@ -7,7 +7,7 @@ import smart.lib.Helper;
 import smart.lib.Pagination;
 import smart.repository.GoodsRepository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Map;
 
 @Service

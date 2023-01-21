@@ -14,8 +14,8 @@ import smart.lib.Db;
 import smart.lib.Helper;
 import smart.lib.JsonResult;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.Map;
 
 @Controller(value = "admin/other/static")

@@ -1,10 +1,10 @@
 package smart.cache;
 
+import jakarta.annotation.PostConstruct;
 import smart.config.AppConfig;
 import smart.lib.Helper;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

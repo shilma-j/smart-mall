@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-<header th:replace="__${theme}__/components::header">
+<header th:replace="~{__${theme}__/components::header}">
 </header>
 
 <div class="container">
@@ -45,6 +45,6 @@
 
 </div>
 
-<footer th:replace="__${theme}__/components::footer"></footer>
+<footer th:replace="~{__${theme}__/components::footer}"></footer>
 </body>
 </html>

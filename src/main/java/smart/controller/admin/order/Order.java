@@ -1,5 +1,6 @@
 package smart.controller.admin.order;
 
+import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,8 @@ import smart.repository.OrderGoodsRepository;
 import smart.repository.OrderRepository;
 import smart.service.OrderService;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Controller(value = "admin/order/order")

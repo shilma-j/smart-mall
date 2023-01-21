@@ -3,7 +3,7 @@ package smart.controller.user;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping(path = "user/password")

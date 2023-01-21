@@ -1,5 +1,6 @@
 package smart.cache;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import smart.config.AppConfig;
@@ -9,7 +10,6 @@ import smart.lib.express.FreeRule;
 import smart.lib.express.PriceRule;
 import smart.repository.ExpressCompanyRepository;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component

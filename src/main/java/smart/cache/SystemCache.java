@@ -1,5 +1,6 @@
 package smart.cache;
 
+import jakarta.annotation.PostConstruct;
 import smart.lib.Security;
 import smart.lib.Helper;
 import smart.lib.Json;
@@ -7,7 +8,6 @@ import smart.repository.SystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

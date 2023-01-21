@@ -1,5 +1,6 @@
 package smart.controller.admin.article;
 
+import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,8 @@ import smart.lib.*;
 import smart.repository.ArticleCategoryRepository;
 import smart.repository.ArticleRepository;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

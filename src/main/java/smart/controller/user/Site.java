@@ -1,5 +1,6 @@
 package smart.controller.user;
 
+import jakarta.annotation.Resource;
 import smart.authentication.UserToken;
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
@@ -13,9 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Controller(value = "user/site")
 @RequestMapping(path = "user")

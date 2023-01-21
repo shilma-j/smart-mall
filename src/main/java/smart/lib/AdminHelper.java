@@ -3,7 +3,7 @@ package smart.lib;
 import smart.lib.session.Session;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class AdminHelper {
 
