@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head">
+<head th:replace="~{admin/components::head}">
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header" />
+<div th:replace="~{admin/components::header}" />
 
 <div class="alert alert-primary" role="alert" th:text="${title}"></div>
 <form autocomplete="off" method="post">
@@ -23,6 +23,6 @@
     <div class="text-center"><button class="btn btn-primary">确定</button></div>
 </form>
 <br>
-<div th:replace="admin/components::footer" />
+<div th:replace="~{admin/components::footer}" />
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head">
+<head th:replace="~{admin/components::head}">
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 <div>
     <div class="alert alert-primary" role="alert" th:text="${title}"></div>
     <form class="form-inline" id="uploadForm">
@@ -30,7 +30,7 @@
 
 </script>
 
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 <script>
 
     const aHint = document.getElementById('hint')

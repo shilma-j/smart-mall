@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head(style=~{::style},script=~{::head/script})">
+<head th:replace="~{admin/components::head(style=~{::style})}">
     <style>
         #specTable a.remove{margin: 0 1rem}
         #specTable img.icon {
@@ -15,7 +15,7 @@
     </script>
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 
 <div class="alert alert-primary" role="alert" th:text="${title}"></div>
@@ -76,6 +76,6 @@
 </form>
 <br>
 <script th:src="${#helpers.retouch('/admin/goodsSpec.js')}"></script>
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 </body>
 </html>

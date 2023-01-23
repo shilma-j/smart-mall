@@ -32,7 +32,7 @@
     </script>
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 <div class="alert alert-primary" role="alert" th:text="${title}"></div>
 <form autocomplete="off" method="post" th:object="${goods}">
@@ -148,7 +148,7 @@
     </div>
 </form>
 <br>
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 <script>
     const imgsStr = "[[${goods.imgs}]]";
 </script>

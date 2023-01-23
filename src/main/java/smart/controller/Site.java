@@ -1,12 +1,12 @@
 package smart.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import smart.cache.*;
 import smart.lib.Captcha;
@@ -16,9 +16,6 @@ import smart.lib.session.Session;
 import smart.service.GoodsService;
 
 import javax.imageio.ImageIO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 
 @Controller
@@ -47,13 +44,12 @@ public class Site {
     /**
      * 验证码
      *
-     * @param request  request
      * @param response response
      * @param session  session
      */
     @RequestMapping(value = "captcha")
     @ResponseBody
-    public void getCaptcha(HttpServletRequest request, HttpServletResponse response, Session session) {
+    public void getCaptcha(HttpServletResponse response, Session session) {
         response.setHeader("Cache-Control", "no-store");
         response.setContentType("image/png");
         var captchaResult = Captcha.getImageCode();
@@ -85,19 +81,15 @@ public class Site {
      * @return view
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public ModelAndView getList(HttpServletRequest request) {
-
-        ModelAndView modelAndView = Helper.newModelAndView("list", request);
+    public ModelAndView getList(
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "") String sort
+    ) {
         long cid = Helper.longValue(request.getParameter("cid"));
-        String q = request.getParameter("q");
-        if (q == null) {
-            q = "";
-        }
-        String sort = request.getParameter("sort");
-        if (sort == null) {
-            sort = "";
-        }
-        Pagination pagination = goodsService.getGoodsList(cid, q, sort, Helper.intValue(request.getParameter("page")));
+        long page = Helper.longValue(request.getParameter("page"));
+        ModelAndView modelAndView = Helper.newModelAndView("list", request);
+        Pagination pagination = goodsService.getGoodsList(cid, q, sort, page);
         modelAndView.addObject("cid", cid);
         modelAndView.addObject("q", q);
         modelAndView.addObject("sort", sort);
@@ -116,7 +108,6 @@ public class Site {
     @RequestMapping(value = "test", method = RequestMethod.GET)
     @ResponseBody
     public String getTest(Session session) {
-
         return null;
     }
 

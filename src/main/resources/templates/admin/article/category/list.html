@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head">
+<head th:replace="~{admin/components::head}">
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 <div class="alert alert-primary" role="alert">
     [[${title}]]&nbsp;<a href="edit">新建文章类别</a>
@@ -32,6 +32,6 @@
     </tr>
     </tbody>
 </table>
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 </body>
 </html>

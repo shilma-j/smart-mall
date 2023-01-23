@@ -4,7 +4,7 @@
     <script th:src="${#helpers.retouch('/js/tinymce/tinymce.min.js')}"></script>
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 <div class="alert alert-primary" role="alert" th:text="${title}"></div>
 <form autocomplete="off" method="post">
@@ -94,6 +94,6 @@
         }
     });
 </script>
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 </body>
 </html>

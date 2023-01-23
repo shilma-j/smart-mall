@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head(style=~{::style})">
+<head th:replace="~{admin/components::head(style=~{::style})}">
     <style>
         form a.remove {
             margin: 0 1rem
@@ -16,7 +16,7 @@
     </style>
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 <div class="alert alert-primary" role="alert" th:text="${title}"></div>
 
@@ -169,6 +169,6 @@
     Vue.createApp(CarouselRendering).mount('#div1')
 </script>
 <!--script th:src="${#helpers.retouch('/admin/carousel1.js')}"></script-->
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 </body>
 </html>

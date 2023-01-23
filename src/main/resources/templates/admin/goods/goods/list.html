@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head(style=~{::style},script=~{::head/script})">
+<head th:replace="~{admin/components::head(style=~{::style})}">
     <style>
         .goodsIcon {
             width: 100px;
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body class="container-fluid">
-<div th:replace="admin/components::header"/>
+<div th:replace="~{admin/components::header}"/>
 
 <div class="alert alert-primary" role="alert">
     [[${title}]]&nbsp;<a href="edit">新建商品</a>
@@ -50,6 +50,6 @@
 </table>
 <nav th:utext="${pagination.generateBootstrapPagination()}"/>
 
-<div th:replace="admin/components::footer"/>
+<div th:replace="~{admin/components::footer}"/>
 </body>
 </html>

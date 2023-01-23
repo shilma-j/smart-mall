@@ -34,14 +34,15 @@ public class Goods {
     /**
      * 商品页面
      *
-     * @param goodsId 商品ID
+     * @param goodsIdStr 商品ID
      * @param request http request
      * @return 商品页面
      */
-    @GetMapping(path = "{goodsId:\\d+}.html")
+    @GetMapping(path = "{goodsIdStr:\\S+}.html")
     public ModelAndView getIndex(
-            @PathVariable long goodsId,
+            @PathVariable String goodsIdStr,
             HttpServletRequest request) {
+        long goodsId = Helper.longValue(goodsIdStr);
         GoodsEntity goodsEntity = goodsRepository.findById(goodsId).orElse(null);
         if (goodsEntity == null) {
             return Helper.msgPage("商品不存在", "", request);

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="__${theme}__/components::head(link= ~{::link})">
+<head th:replace="~{__${theme}__/components::head(link= ~{::link})}">
     <link rel="stylesheet" th:href="${#helpers.retouch('/theme/' + theme + '/cart.css')}">
 </head>
 <body>

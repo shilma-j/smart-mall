@@ -90,9 +90,13 @@ public class Site {
 
     @PostMapping(path = "login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postLogin(HttpServletRequest request, Session session) {
-        String back = request.getParameter("back");
-        if (back == null || back.length() == 0) {
+    public String postLogin(
+            HttpServletRequest request,
+            Session session,
+            @RequestParam(defaultValue = "/") String back,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String password) {
+        if (back.length() == 0) {
             back = "/";
         }
         Cart oldCart = null;
@@ -100,8 +104,6 @@ public class Site {
             oldCart = new Cart(request);
         }
         JsonResult jsonResult = new JsonResult();
-        var name = request.getParameter("name");
-        var password = request.getParameter("password");
         UserService.Result result = userService.login(name, password, Helper.getClientIp(request));
         if (result.userEntity != null) {
             //login success
