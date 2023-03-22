@@ -1,14 +1,8 @@
 package smart.controller.admin.sys;
 
 import jakarta.annotation.Resource;
-import smart.config.AdminAuthority;
-import smart.config.AppConfig;
-import smart.entity.AdminRoleEntity;
-import smart.lib.AdminHelper;
-import smart.lib.Helper;
-import smart.lib.JsonResult;
-import smart.lib.Pagination;
-import smart.repository.AdminRoleRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
@@ -18,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import smart.config.AdminAuthority;
+import smart.entity.AdminRoleEntity;
+import smart.lib.*;
+import smart.repository.AdminRoleRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -42,8 +38,7 @@ public class AdminRole {
         long id = Helper.longValue(request.getParameter("id"));
         AdminRoleEntity adminRoleEntity = adminRoleRepository.findById(id).orElse(null);
         if (adminRoleEntity != null) {
-            Long num = AppConfig.getJdbcTemplate().queryForObject("select count(*) from t_admin_user where role_id=" + id, Long.class);
-            if (num != null && num > 0) {
+            if (Db.count("t_admin_user", Map.of("role_id", id)) > 0) {
                 jsonResult.setMsg("该角色正在被使用中,删除失败");
                 return jsonResult.toString();
             }
