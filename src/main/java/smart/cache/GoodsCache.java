@@ -1,6 +1,7 @@
 package smart.cache;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.DependsOn;
 import smart.config.AppConfig;
 import smart.lib.Helper;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@Component("GoodsCache")
+@Component
+@DependsOn("categoryCache")
 public class GoodsCache {
     // 推荐商品(按类别分项),long:类别ID, Map<String, Object>
     private static List<Map<String, Object>> recommend;
