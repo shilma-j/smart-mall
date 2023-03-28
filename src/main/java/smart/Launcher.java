@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import smart.cache.GoodsCache;
 import smart.config.AppConfig;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 
 @DependsOn({"appConfig", "json", "security"})
+@EnableAsync
 @EnableScheduling
 @SpringBootApplication
 public class Launcher {
