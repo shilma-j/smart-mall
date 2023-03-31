@@ -6,7 +6,7 @@ Type=simple
 User=user
 Group=user
 StandardOutput=null
-WorkingDirectory=/home/smart-mall
+WorkingDirectory=/opt/smart-mall
 ExecStart=/usr/bin/java -Xlog:gc:gc.log:time:filesize=2M,filecount=5 -Xms500M -Xmx500M -jar smart-mall.jar
 Restart=always
 RestartSec=10s
