@@ -1,10 +1,10 @@
 package smart.lib.session;
 
-import smart.config.RedisConfig;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import smart.config.RedisConfig;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,8 +115,10 @@ public class Session implements BaseSession {
     @Override
     public String getId(boolean canCreate) {
         if (id == null && canCreate) {
-            id = BaseSession.generalId();
-            RedisConfig.getStringObjectRedisTemplate().opsForHash().put(REDIS_PREFIX + id, "sessionId", id);
+            do {
+                id = BaseSession.generalId();
+            }
+            while (!RedisConfig.getStringObjectRedisTemplate().opsForHash().putIfAbsent(REDIS_PREFIX + id, "sessionId", id));
             flush();
             Cookie cookie = new Cookie(COOKIE_NAME, id);
             cookie.setHttpOnly(true);

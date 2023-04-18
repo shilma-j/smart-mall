@@ -3,8 +3,6 @@ package smart.lib;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.Map;
 @Component
 public class Json {
     private static ObjectMapper mapper;
-    private final Log log = LogFactory.getLog(Json.class);
 
     public Json(ObjectMapper objectMapper) {
         mapper = objectMapper;
@@ -30,7 +27,6 @@ public class Json {
      * @return map
      */
     public static Map<String, String> decode(String str) {
-
         Map<String, String> map = null;
         try {
             map = mapper.readValue(str, new TypeReference<>() {
@@ -99,8 +95,7 @@ public class Json {
     public static <T> List<T> toList(String str, Class<T> tClass) {
         List<T> list = null;
         try {
-            list = mapper.readValue(str,
-                    mapper.getTypeFactory().constructParametricType(List.class, tClass));
+            list = mapper.readValue(str, mapper.getTypeFactory().constructParametricType(List.class, tClass));
         } catch (JsonProcessingException ignored) {
         }
         return list;

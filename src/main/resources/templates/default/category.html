@@ -37,7 +37,7 @@
     </style>
 </head>
 <body>
-<header th:replace="__${theme}__/components::header(title='分类浏览')">
+<header th:replace="~{__${theme}__/components::header(title='分类浏览')}">
 </header>
 <div class="container container1">
     <th:block th:each="node : ${categoryNodes}">

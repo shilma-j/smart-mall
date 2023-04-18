@@ -6,6 +6,8 @@ app:
   key: key1
 
 logging:
+  charset:
+    file: utf-8
   file:
     name: logs/run.log
   logback:

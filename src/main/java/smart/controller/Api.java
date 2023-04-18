@@ -27,6 +27,12 @@ public class Api {
         return str;
     }
 
+    @GetMapping("sleep")
+    public String getSleep(@RequestParam(defaultValue = "1") int t) throws InterruptedException {
+        Thread.sleep(t);
+        return Integer.toString(t);
+    }
+
     @GetMapping("test")
     public String getTest(HttpServletRequest request) {
         return null;

@@ -40,7 +40,7 @@ public class UserAuth extends Auth {
     @Before("pointcut()")
     public void auth(JoinPoint joinPoint) throws UserAuthException {
         HttpServletRequest request = getRequest();
-        String uri = request.getServletPath();
+        String uri = request.getRequestURI();
         uri = uri.substring(6);
         if (uri.equals("login") || uri.equals("register")) {
             return;

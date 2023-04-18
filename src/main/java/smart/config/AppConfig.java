@@ -75,8 +75,8 @@ public class AppConfig {
                 }
                 appDir = matcher.group(1) + "/";
             } else {
-                Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
-                LOGGER.error(String.format("not found application dir: %s", dir));
+                Logger logger = LoggerFactory.getLogger(this.getClass());
+                logger.error(String.format("not found application dir: %s", dir));
                 System.exit(-1);
             }
 

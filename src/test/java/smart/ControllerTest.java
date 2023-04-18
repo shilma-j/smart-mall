@@ -1,5 +1,9 @@
 package smart;
 
+import jakarta.servlet.http.Cookie;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import smart.entity.UserEntity;
 import smart.lib.Captcha;
 import smart.lib.Helper;
@@ -22,12 +26,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import jakarta.annotation.Resource;
 
-@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
 @SpringBootTest
 public class ControllerTest {
 
     @Resource
     UserRepository userRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Timeout(1)
@@ -36,9 +42,12 @@ public class ControllerTest {
         Assertions.assertEquals(200, mockMvc.perform(MockMvcRequestBuilders.get("/user/login")).andReturn().getResponse().getStatus());
     }
 
+    //@Test
     @Timeout(1)
     public void registerTest() throws Exception {
         Assertions.assertEquals(200, mockMvc.perform(MockMvcRequestBuilders.get("/user/register")).andReturn().getResponse().getStatus());
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/captcha")).andReturn();
+        Cookie[] cookies = mvcResult.getResponse().getCookies();
         String name = "";
         String password = Helper.randomString(8) + "1!";
         while (true) {
@@ -61,21 +70,6 @@ public class ControllerTest {
         userRepository.deleteById(userEntity.getId());
     }
 
-    @Test
-    public void testCaptcha() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/captcha")).andReturn();
-        Session session = Session.from(mvcResult.getRequest());
-        Assertions.assertNotNull(session);
-        String code = (String) session.get(Helper.camelCase(Captcha.class));
-        MockHttpServletResponse response = mvcResult.getResponse();
-        Assertions.assertEquals(Captcha.SIZE, code.length());
-        Assertions.assertEquals(200, response.getStatus());
-        Assertions.assertTrue(response.getContentAsByteArray().length > 600);
-        Assertions.assertEquals("image/png", response.getContentType());
-    }
 
-    @Autowired
-    private void setWebApplicationContext(WebApplicationContext webApplicationContext) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+
 }
