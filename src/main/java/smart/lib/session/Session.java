@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * session 实现，用于替换系统session机制
- * 相关配置等在 GlobalAuth SessionConfig 中实现
+ * 相关配置等在 HttpInterceptor SessionArgumentResolvers 中实现
  */
 public class Session implements BaseSession {
     // cooke name
@@ -20,12 +20,22 @@ public class Session implements BaseSession {
     //redis prefix
     public static String REDIS_PREFIX = "sid:";
 
-    // 过期时间
-    public static Duration TIMEOUT = Duration.ofHours(8);
-
     private final HttpServletResponse response;
     // session id
     private String id;
+
+    /**
+     * create session object by session id
+     *
+     * @param sessionId exist session id
+     */
+    public Session(String sessionId) {
+        response = null;
+        id = sessionId;
+        if (!flush()) {
+            throw new IllegalArgumentException("session not exists");
+        }
+    }
 
     /**
      * create session object
@@ -34,7 +44,6 @@ public class Session implements BaseSession {
      * @param response response
      */
     public Session(HttpServletRequest request, HttpServletResponse response) {
-
         this.response = response;
         var cookies = request.getCookies();
         if (cookies != null) {

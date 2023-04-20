@@ -72,7 +72,7 @@ public class OrderService {
                               long source) {
         OrderInfo orderInfo = new OrderInfo();
         long userId = cart.getUserToken().getId();
-        UserEntity userEntity = userRepository.findByIdForUpdate(userId);
+        UserEntity userEntity = userRepository.findByIdForWrite(userId);
         if (userEntity == null || userEntity.getStatus() != 0) {
             return orderInfo.setErr("用户不存在或状态异常");
         }

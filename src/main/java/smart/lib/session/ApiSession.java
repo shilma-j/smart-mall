@@ -19,12 +19,12 @@ public class ApiSession implements BaseSession {
     //redis prefix
     public static String REDIS_PREFIX = "api:";
 
-    // 过期时间
-    public static Duration TIMEOUT = Duration.ofDays(31);
-
-
     // session id
     private String id;
+
+    public ApiSession(String sessionId) {
+        id = sessionId;
+    }
 
     /**
      * create session object

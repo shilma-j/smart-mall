@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head(style=~{::head/style}, script=~{::head/script})">
+<head th:replace="~{admin/components::head(style=~{::head/style}, script=~{::head/script})}">
     <style>
         img.spec {
             max-height: 40px;
@@ -97,7 +97,7 @@
         <div class="form-group col-md-3">
             <label for="cateId">更新日期</label><br>
             <div class="form-check form-check-inline">
-                <input class="form-control" type="date" name="released" th:value="${#helpers.dateFormat(goods.updateTime)}" required>
+                <input class="form-control" type="datetime-local" name="released" th:value="${#helpers.dateFormat(goods.updateTime)}" required>
             </div>
         </div>
         <div class="form-group col-md-12">

@@ -38,7 +38,7 @@ public class AdminUser {
     public String postDelete(HttpServletRequest request) {
         JsonResult jsonResult = new JsonResult();
         long id = Helper.longValue(request.getParameter("id"));
-        UserEntity userEntity = userRepository.findById(id).orElse(null);
+        UserEntity userEntity = userRepository.findByIdForWrite(id);
         long num = AppConfig.getJdbcTemplate().update("delete from t_admin_user where user_id = " + id);
         if (num == 0 || userEntity == null) {
             jsonResult.setMsg("该账号不存在,请刷新页面重试");

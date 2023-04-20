@@ -80,7 +80,7 @@ public class Validate {
             return String.format("%s长度过长", alias);
         }
         if (Pattern.matches("^\\d+$", data)) {
-            return String.format("%s不能是存数字", alias);
+            return String.format("%s不能是纯数字", alias);
         }
         if (!Pattern.matches("^[a-z\\d]+$", data)) {
             return String.format("%s只能由字母或数字组成", alias);

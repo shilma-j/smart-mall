@@ -1,6 +1,12 @@
 package smart.controller.user;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import smart.authentication.UserToken;
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
@@ -9,13 +15,6 @@ import smart.lib.*;
 import smart.lib.session.Session;
 import smart.repository.UserRepository;
 import smart.service.UserService;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 
 @Controller(value = "user/site")
 @RequestMapping(path = "user")
@@ -50,31 +49,29 @@ public class Site {
 
     @PostMapping(path = "info", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postInfo(
-            HttpServletRequest request,
-            Session session,
-            UserToken userToken,
-            @RequestParam(required = false) String phone
-    ) {
+    public String postInfo(HttpServletRequest request, Session session, UserToken userToken, @RequestParam(required = false) String phone) {
         String msg;
         JsonResult jsonResult = new JsonResult();
         msg = Validate.mobile(phone, "手机号");
         if (msg != null) {
             jsonResult.error.put("phone", msg);
+            return jsonResult.toString();
         }
-
         if (jsonResult.error.size() == 0) {
-            if (userRepository.updateInfo(userToken.getId(), phone) == 0) {
+            UserEntity userEntity = userRepository.findByIdForWrite(userToken.getId());
+            if (userEntity == null) {
                 jsonResult.setMsg("修改失败,请刷新重试");
+                return jsonResult.toString();
             } else {
+                userEntity.setPhone(phone);
+                userRepository.saveAndFlush(userEntity);
                 jsonResult.setMsg("修改成功");
                 jsonResult.setUrl("/user/central");
                 userToken.setPhone(phone);
                 userToken.save(session);
-
             }
         }
-        return jsonResult.toString();
+        return Helper.msgPage(jsonResult, request);
     }
 
     @GetMapping(path = "login")
@@ -90,12 +87,7 @@ public class Site {
 
     @PostMapping(path = "login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postLogin(
-            HttpServletRequest request,
-            Session session,
-            @RequestParam(defaultValue = "/") String back,
-            @RequestParam(defaultValue = "") String name,
-            @RequestParam(defaultValue = "") String password) {
+    public String postLogin(HttpServletRequest request, Session session, @RequestParam(defaultValue = "/") String back, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String password) {
         if (back.length() == 0) {
             back = "/";
         }
@@ -134,14 +126,7 @@ public class Site {
 
     @PostMapping(path = "password", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postPassword(
-            HttpServletRequest request,
-            Session session,
-            UserToken userToken,
-            @RequestParam(required = false) String oldPassword,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) String password1
-    ) {
+    public String postPassword(HttpServletRequest request, Session session, UserToken userToken, @RequestParam(required = false) String oldPassword, @RequestParam(required = false) String password, @RequestParam(required = false) String password1) {
         String msg;
         JsonResult jsonResult = new JsonResult();
         msg = Validate.password(oldPassword, "原密码");
@@ -191,37 +176,26 @@ public class Site {
 
     @PostMapping(path = "register", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postRegister(
-            HttpServletRequest request,
-            Session session,
-            @RequestParam(required = false) String captcha,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) String password1
-    ) {
+    public String postRegister(HttpServletRequest request, Session session, @RequestParam(required = false) String captcha, @RequestParam(required = false) String name, @RequestParam(required = false) String password, @RequestParam(required = false) String password1) {
         if (name != null) {
             name = name.toLowerCase();
         }
         JsonResult result = new JsonResult();
         String msg = Validate.name(name, "用户名");
         if (msg != null) {
-            result.setMsg(msg)
-                    .error.put("name", msg);
+            result.setMsg(msg).error.put("name", msg);
         }
 
         msg = Validate.password(password, "密码");
         if (msg != null) {
-            result.setMsg(msg)
-                    .error.put("password", msg);
+            result.setMsg(msg).error.put("password", msg);
         } else if (!password.equals(password1)) {
             msg = "重复密码与原密码不一致";
-            result.setMsg(msg)
-                    .error.put("password1", msg);
+            result.setMsg(msg).error.put("password1", msg);
         }
         msg = Validate.captcha(captcha, session, "验证码");
         if (msg != null) {
-            result.setMsg(msg)
-                    .error.put("captcha", msg);
+            result.setMsg(msg).error.put("captcha", msg);
         }
 
         if (result.error.size() > 0) {
@@ -239,8 +213,7 @@ public class Site {
             result.setUrl("/user/central").setMsg("注册会员成功");
             return Helper.msgPage(result, request);
         } else {
-            result.setMsg(msg)
-                    .error.put("name", msg);
+            result.setMsg(msg).error.put("name", msg);
         }
         return result.toString();
     }

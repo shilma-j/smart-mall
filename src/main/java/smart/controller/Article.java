@@ -1,20 +1,17 @@
 package smart.controller;
 
-import smart.cache.ArticleCache;
-import smart.cache.SystemCache;
-import smart.lib.Helper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
+import smart.cache.ArticleCache;
+import smart.cache.SystemCache;
+import smart.lib.Helper;
 
 @Controller
 @RequestMapping(path = "article")
-@Transactional
 public class Article {
 
     @GetMapping(path = "detail/{id:\\d{1,18}}")

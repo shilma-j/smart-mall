@@ -2,10 +2,7 @@ package smart.controller.admin.goods;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import smart.cache.BrandCache;
 import smart.cache.CategoryCache;
@@ -23,12 +20,8 @@ import smart.repository.GoodsSpecRepository;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller(value = "admin/goods/goods")
@@ -124,6 +117,7 @@ public class Goods {
             goodsEntity = new GoodsEntity();
             goodsEntity.setSpec("[]");
             goodsEntity.setStatus(GoodsStatus.ON_SELL);
+            goodsEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             modelAndView.addObject("title", "新建商品");
         }
         var goodsSpecList = goodsSpecRepository.findAllByGoodsIdOrderByIdxAsc(goodsEntity.getId());
@@ -140,18 +134,17 @@ public class Goods {
     @PostMapping(value = "edit", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Transactional
-    public String postEdit(HttpServletRequest request) {
+    public String postEdit(HttpServletRequest request,
+                           @RequestParam(defaultValue = "") String name,
+                           @RequestParam(defaultValue = "") String des,
+                           @RequestParam(defaultValue = "", name = "released") String releasedStr
+                           ) {
         JsonResult jsonResult = new JsonResult();
         String msg;
-        String name = request.getParameter("name");
-        if (name == null || name.trim().length() == 0) {
+        name = name.trim();
+        if (name.length() == 0) {
             jsonResult.setMsg("商品名称不得为空");
             return jsonResult.toString();
-        }
-        name = name.trim();
-        String des = request.getParameter("des");
-        if (des == null) {
-            des = "";
         }
         long status = 0L;
         int shipping = Helper.intValue(request.getParameter("shipping"));
@@ -170,9 +163,10 @@ public class Goods {
         if (onSell == 1) {
             status = status | GoodsStatus.ON_SELL;
         }
-        Date released = null;
+        Date released;
+        releasedStr = releasedStr.replace('T', ' ');
         try {
-            released = Date.valueOf(request.getParameter("released"));
+            released = Helper.parseDate(releasedStr);
         } catch (Exception e) {
             jsonResult.setMsg("请填写正确的发布日期");
             return jsonResult.toString();
@@ -209,7 +203,7 @@ public class Goods {
             goodsEntity = new GoodsEntity();
             goodsEntity.setCreateTime(now);
         }
-        goodsEntity.setUpdateTime(now);
+        goodsEntity.setUpdateTime(new Timestamp(released.getTime()));
         goodsEntity.setBrandId(Helper.longValue(request.getParameter("brandId")));
         if (goodsEntity.getBrandId() > 0 && BrandCache.getRows().get(goodsEntity.getBrandId()) == null) {
             jsonResult.setMsg("商品品牌不存在");

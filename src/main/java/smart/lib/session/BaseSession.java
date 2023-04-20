@@ -2,12 +2,16 @@ package smart.lib.session;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Map;
 
 /**
  * session interface
  */
 public interface BaseSession {
+    // 过期时间
+    public static Duration TIMEOUT = Duration.ofHours(48);
+
     /**
      * 生成 session id
      *

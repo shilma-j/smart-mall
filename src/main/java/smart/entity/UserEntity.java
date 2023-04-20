@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Table(name = "t_user")
 public class UserEntity extends BaseEntity {
     private String avatar;
+    private String email;
     @Id
     private long id;
     private String lastLoginIp;
@@ -40,6 +41,13 @@ public class UserEntity extends BaseEntity {
         this.avatar = avatar;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public long getId() {
         return id;
