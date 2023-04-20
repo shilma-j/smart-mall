@@ -13,6 +13,7 @@ import smart.lib.Captcha;
 import smart.lib.Helper;
 import smart.lib.Pagination;
 import smart.lib.session.Session;
+import smart.lib.utils.RequestUtil;
 import smart.service.GoodsService;
 
 import javax.imageio.ImageIO;
@@ -86,8 +87,8 @@ public class Site {
             @RequestParam(defaultValue = "") String q,
             @RequestParam(defaultValue = "") String sort
     ) {
-        long cid = Helper.longValue(request.getParameter("cid"));
-        long page = Helper.longValue(request.getParameter("page"));
+        long cid = RequestUtil.getLong(request, "cid");
+        long page = RequestUtil.getLong(request, "page");
         ModelAndView modelAndView = Helper.newModelAndView("list", request);
         Pagination pagination = goodsService.getGoodsList(cid, q, sort, page);
         modelAndView.addObject("cid", cid);

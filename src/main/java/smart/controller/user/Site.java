@@ -13,8 +13,11 @@ import smart.config.AppConfig;
 import smart.entity.UserEntity;
 import smart.lib.*;
 import smart.lib.session.Session;
+import smart.lib.utils.RequestUtil;
 import smart.repository.UserRepository;
 import smart.service.UserService;
+
+import java.util.Objects;
 
 @Controller(value = "user/site")
 @RequestMapping(path = "user")
@@ -87,7 +90,10 @@ public class Site {
 
     @PostMapping(path = "login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postLogin(HttpServletRequest request, Session session, @RequestParam(defaultValue = "/") String back, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String password) {
+    public String postLogin(HttpServletRequest request, Session session, @RequestParam(name = "back") String abc) {
+        String name = RequestUtil.getStr(request, "name", "");
+        String password = RequestUtil.getStr(request, "password", "");
+        String back = RequestUtil.getStr(request, "back", "");
         if (back.length() == 0) {
             back = "/";
         }
@@ -176,7 +182,11 @@ public class Site {
 
     @PostMapping(path = "register", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postRegister(HttpServletRequest request, Session session, @RequestParam(required = false) String captcha, @RequestParam(required = false) String name, @RequestParam(required = false) String password, @RequestParam(required = false) String password1) {
+    public String postRegister(HttpServletRequest request, Session session) {
+        String name = RequestUtil.getStr(request,"name");
+        String password = RequestUtil.getStr(request,"password");
+        String password1 = RequestUtil.getStr(request,"password1");
+        String captcha = RequestUtil.getStr(request,"captcha");
         if (name != null) {
             name = name.toLowerCase();
         }
