@@ -1,12 +1,9 @@
 package smart.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @DynamicInsert
 @DynamicUpdate
@@ -16,6 +13,7 @@ public class UserAddressEntity extends BaseEntity {
     private String address;
     // 默认地址
     private long dft;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     // 收货人

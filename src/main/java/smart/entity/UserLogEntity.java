@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "t_user_log")
 public class UserLogEntity extends BaseEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long uid;

@@ -1,18 +1,15 @@
 package smart.entity;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity
 @Table(name = "t_admin_role")
 public class AdminRoleEntity extends BaseEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;

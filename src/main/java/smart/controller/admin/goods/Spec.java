@@ -98,7 +98,7 @@ public class Spec {
             if (val == null) {
                 continue;
             }
-            val = val.replace(" ", "");
+            val = val.trim();
             // skip repeat value
             String finalVal = val;
             if (val.length() == 0 ||

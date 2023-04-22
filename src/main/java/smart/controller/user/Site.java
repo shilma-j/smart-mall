@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import smart.authentication.UserToken;
@@ -16,8 +17,6 @@ import smart.lib.session.Session;
 import smart.lib.utils.RequestUtil;
 import smart.repository.UserRepository;
 import smart.service.UserService;
-
-import java.util.Objects;
 
 @Controller(value = "user/site")
 @RequestMapping(path = "user")
@@ -161,14 +160,16 @@ public class Site {
             UserService userService = AppConfig.getContext().getBean(UserService.class);
             String salt = userService.editPassword(userToken.getId(), password, Helper.getClientIp(request));
             if (salt != null) {
-                jsonResult.setMsg("修改成功");
-                jsonResult.setUrl("/user/central");
+                jsonResult.setMsg("密码修改成功").setUrl("/user/central");
                 userToken.setPassword(Security.sha3_256(password + salt));
                 userToken.setSalt(salt);
                 userToken.save(session);
             } else {
                 jsonResult.setMsg("修改失败,请刷新重试  ");
             }
+        }
+        if (StringUtils.hasLength(jsonResult.getUrl())) {
+            return Helper.msgPage(jsonResult, request);
         }
         return jsonResult.toString();
     }
@@ -183,10 +184,10 @@ public class Site {
     @PostMapping(path = "register", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String postRegister(HttpServletRequest request, Session session) {
-        String name = RequestUtil.getStr(request,"name");
-        String password = RequestUtil.getStr(request,"password");
-        String password1 = RequestUtil.getStr(request,"password1");
-        String captcha = RequestUtil.getStr(request,"captcha");
+        String name = RequestUtil.getStr(request, "name");
+        String password = RequestUtil.getStr(request, "password");
+        String password1 = RequestUtil.getStr(request, "password1");
+        String captcha = RequestUtil.getStr(request, "captcha");
         if (name != null) {
             name = name.toLowerCase();
         }

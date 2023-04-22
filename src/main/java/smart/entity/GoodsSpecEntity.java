@@ -1,15 +1,16 @@
 package smart.entity;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import jakarta.persistence.*;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity
 @Table(name = "t_goods_spec")
 public class GoodsSpecEntity extends BaseEntity {
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long goodsId;
@@ -19,7 +20,6 @@ public class GoodsSpecEntity extends BaseEntity {
     private long weight;
     @Column(columnDefinition = "text")
     private String des;
-
 
 
     public long getId() {

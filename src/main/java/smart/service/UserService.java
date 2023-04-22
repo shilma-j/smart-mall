@@ -1,20 +1,19 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
 import smart.authentication.UserToken;
 import smart.entity.UserEntity;
-import smart.lib.Security;
 import smart.lib.Db;
 import smart.lib.Helper;
+import smart.lib.Security;
 import smart.lib.Validate;
 import smart.lib.session.Session;
 import smart.lib.status.AccountStatus;
 import smart.repository.UserRepository;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,19 +22,23 @@ import java.util.Map;
 @Service
 public class UserService {
 
+    public static final int SALT_LENGTH = 10;
+
     @Resource
     private UserRepository userRepository;
 
-    @Transactional
     public String editPassword(Long uid, String password, String ip) {
-        String salt = Helper.randomString(4);
-        if (userRepository.updateForPassword(uid, Security.sha3_256(password + salt), salt) == 0) {
+        String salt = Helper.randomString(SALT_LENGTH);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(uid);
+        userEntity.setPassword(Security.sha3_256(Security.sha3_256(password) + Security.sha3_256(salt)));
+        userEntity.setSalt(salt);
+        if (Db.update(userEntity, "password", "salt") == 0) {
             return null;
         }
         return salt;
     }
 
-    @Transactional
     public Result login(String name, String password, String ip) {
         Result result = new Result();
         String defaultErr = "账号或密码错误";
@@ -53,7 +56,7 @@ public class UserService {
             return result;
         }
         long uid = userEntity.getId();
-        password = Security.sha3_256(password + userEntity.getSalt());
+        password = Security.sha3_256(Security.sha3_256(password) + Security.sha3_256(userEntity.getSalt()));
         if (!password.equals(userEntity.getPassword())) {
             return result;
         }
@@ -91,15 +94,14 @@ public class UserService {
      * @return error msg
      */
 
-    @Transactional
     public String register(String name, String password, String registerIp) {
         if (Db.first("t_user", Map.of("name", name)) != null) {
             return "用户名已被注册";
         }
-        String salt = Helper.randomString(4);
+        String salt = Helper.randomString(SALT_LENGTH);
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);
-        userEntity.setPassword(Security.sha3_256(password + salt));
+        userEntity.setPassword(Security.sha3_256(Security.sha3_256(password) + Security.sha3_256(salt)));
         userEntity.setSalt(salt);
         userEntity.setRegisterTime(new Timestamp(System.currentTimeMillis()));
         userEntity.setRegisterIp(registerIp);

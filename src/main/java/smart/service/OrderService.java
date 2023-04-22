@@ -104,7 +104,7 @@ public class OrderService {
         Map<Long, GoodsEntity> goodsEntityMap = new HashMap<>();
         for (var goodsId : goodsIds) {
             try {
-                goodsEntityMap.put(goodsId, goodsRepository.findByIdForUpdate(goodsId));
+                goodsEntityMap.put(goodsId, goodsRepository.findByIdForWrite(goodsId));
             } catch (CannotAcquireLockException e) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return orderInfo.setErr("系统繁忙");

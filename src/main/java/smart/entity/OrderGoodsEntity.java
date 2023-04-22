@@ -1,11 +1,8 @@
 package smart.entity;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @DynamicInsert
 @DynamicUpdate
@@ -13,6 +10,7 @@ import jakarta.persistence.Table;
 @Table(name = "t_order_goods")
 public class OrderGoodsEntity extends BaseEntity {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long orderNo;

@@ -58,12 +58,12 @@ if (spec.length == 0) {
 }
 
 spec.forEach(item => {
-    let div = document.createElement("div");
     let span = document.createElement("span");
     span.classList.add("tag");
     span.classList.add("tagSpec");
     span.innerText = item.name + ": ";
-    div.append(span);
+    specs.append(span);
+    let div = document.createElement("div")
     item.list.forEach(value => {
         let a = document.createElement("a");
         let i = document.createElement("i");
@@ -77,7 +77,7 @@ spec.forEach(item => {
         a.append(i);
         div.append(a);
     });
-    specs.append(div);
+    specs.append(div)
 });
 specItems.forEach(item => {
     if (item.price > maxPrice) {

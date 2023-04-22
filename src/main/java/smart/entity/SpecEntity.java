@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "t_spec")
 public class SpecEntity extends BaseEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;

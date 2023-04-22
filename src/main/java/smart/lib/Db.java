@@ -1,5 +1,6 @@
 package smart.lib;
 
+import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,9 +8,6 @@ import org.springframework.stereotype.Component;
 import smart.entity.BaseEntity;
 import smart.entity.FiledInfo;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,9 +32,7 @@ public class Db {
 
         StringBuilder builder = new StringBuilder(name);
         for (int i = 1; i < builder.length(); i++) {
-            if (Character.isLowerCase(builder.charAt(i - 1))
-                    && Character.isUpperCase(builder.charAt(i))
-                    && Character.isLowerCase(builder.charAt(i + 1))) {
+            if (Character.isLowerCase(builder.charAt(i - 1)) && Character.isUpperCase(builder.charAt(i)) && Character.isLowerCase(builder.charAt(i + 1))) {
                 builder.insert(i++, '_');
             }
         }
@@ -138,7 +134,6 @@ public class Db {
         return annotation.name();
     }
 
-
     /**
      * 获取最近的自增id
      *
@@ -155,17 +150,67 @@ public class Db {
      * @param row   待插入的行
      */
     public static void insert(String table, Map<String, Object> row) {
-        StringBuilder sql = new StringBuilder(String.format("INSERT INTO `%s` (", table));
-        for (String key : row.keySet().toArray(String[]::new)) {
-            if (row.get(key) != null) {
-                sql.append(String.format("`%s`,", key));
-            } else {
-                row.remove(key);
-            }
-
+        if (row.size() == 0) {
+            return;
         }
-        sql.deleteCharAt(sql.length() - 1).append(") VALUES (").append("?,".repeat(row.size())).deleteCharAt(sql.length() - 1).append(")");
+        var colNames = row.keySet().toArray(String[]::new);
+        StringBuilder sql = new StringBuilder(getInsertHeader(table, colNames)).append("(").append("?,".repeat(row.size()));
+        sql.deleteCharAt(sql.length() - 1).append(")");
         jdbc.update(sql.toString(), row.values().toArray());
+    }
+
+    /**
+     * batch insert
+     *
+     * @param table 表名字
+     * @param rows  待插入的行
+     */
+    public static void inserts(String table, Iterable<Map<String, Object>> rows) {
+        var iterator = rows.iterator();
+        if (!iterator.hasNext()) {
+            return;
+        }
+        var row = iterator.next();
+        Stack<Object> params = new Stack<>();
+        var colNames = row.keySet().toArray(String[]::new);
+        if (colNames.length == 0) {
+            return;
+        }
+        StringBuilder sql = new StringBuilder(getInsertHeader(table, colNames));
+        do {
+            sql.append("(");
+            for (var colName : colNames) {
+                sql.append("?,");
+                params.push(row.get(colName));
+            }
+            sql.deleteCharAt(sql.length() - 1).append("),");
+            row = iterator.hasNext() ? iterator.next() : null;
+        }
+        while (row != null);
+        sql.deleteCharAt(sql.length() - 1);
+        var arr = params.toArray();
+        jdbc.update(sql.toString(), arr);
+    }
+
+    /**
+     * insert row
+     *
+     * @param entity record
+     */
+    public static void insert(BaseEntity entity) {
+        Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
+        Map<String, Object> row = new LinkedHashMap<>();
+
+        fieldInfos.forEach((name, field) -> {
+            var generated = field.getAnnotation(GeneratedValue.class);
+            if (generated != null && generated.strategy() == GenerationType.IDENTITY) {
+                return;
+            }
+            if (field.getAnnotation(Transient.class) == null) {
+                row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
+            }
+        });
+        insert(getTableNameByEntity(entity.getClass()), row);
     }
 
     /**
@@ -181,8 +226,7 @@ public class Db {
         Map<String, Object> row = new LinkedHashMap<>();
 
         fieldInfos.forEach((name, field) -> {
-            if (field.getAnnotation(Transient.class) == null
-                    && (filedNames.length == 0 || names.contains(name))) {
+            if (field.getAnnotation(Transient.class) == null && (filedNames.length == 0 || names.contains(name))) {
                 row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
             }
             names.remove(name);
@@ -266,8 +310,7 @@ public class Db {
                     throw new IllegalArgumentException("duplicate primary key");
                 }
                 idFiledInfo.set(field);
-            } else if (field.getAnnotation(Transient.class) == null
-                    && (filedNames.length == 0 || names.contains(name))) {
+            } else if (field.getAnnotation(Transient.class) == null && (filedNames.length == 0 || names.contains(name))) {
                 row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
             }
             names.remove(name);
@@ -280,9 +323,19 @@ public class Db {
             throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
         }
 
-        return update(getTableNameByEntity(entity.getClass()),
-                Map.of(primaryKey.getName(), primaryKey.getValue()),
-                row);
+        return update(getTableNameByEntity(entity.getClass()), Map.of(primaryKey.getName(), primaryKey.getValue()), row);
+    }
+
+    private static String getInsertHeader(String tableName, String... colNames) {
+        StringBuilder sql = new StringBuilder("INSERT INTO `");
+        sql.append(tableName).append("` (");
+        for (var name : colNames) {
+            sql.append("`").append(name).append("`,");
+        }
+        sql.deleteCharAt(sql.length() - 1);
+
+        sql.append(") VALUES ");
+        return sql.toString();
     }
 
     @Autowired

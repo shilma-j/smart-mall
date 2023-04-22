@@ -1,12 +1,10 @@
 package smart.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.sql.Timestamp;
 
 @DynamicInsert
@@ -16,6 +14,7 @@ import java.sql.Timestamp;
 public class UserEntity extends BaseEntity {
     private String avatar;
     private String email;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String lastLoginIp;

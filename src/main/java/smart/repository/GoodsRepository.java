@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface GoodsRepository extends JpaRepository<GoodsEntity, Long> {
     @Query(value = "select * from t_goods where id = ? for update", nativeQuery = true)
-    GoodsEntity findByIdForUpdate(long id);
+    GoodsEntity findByIdForWrite(long id);
 
     long countByCateId(long cateId);
 }

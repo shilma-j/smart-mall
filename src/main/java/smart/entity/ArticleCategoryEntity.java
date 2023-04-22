@@ -16,6 +16,7 @@ public class ArticleCategoryEntity extends BaseEntity {
     @Transient
     private List<ArticleEntity> articles;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "t_article")
 public class ArticleEntity extends BaseEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long cateId;

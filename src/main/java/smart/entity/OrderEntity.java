@@ -19,6 +19,7 @@ public class OrderEntity extends BaseEntity {
     private int deleted;
     private long expressId;
     private String expressNo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long no;

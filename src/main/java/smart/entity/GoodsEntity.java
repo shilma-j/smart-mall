@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "t_goods")
 public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private long brandId;

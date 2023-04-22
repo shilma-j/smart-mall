@@ -1,5 +1,8 @@
 package smart.controller.admin.goods;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +20,6 @@ import smart.lib.status.GoodsStatus;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,8 +100,8 @@ public class Goods {
         long id = Helper.longValue(request.getParameter("id"));
         ModelAndView modelAndView = Helper.newModelAndView("admin/goods/goods/edit", request);
         GoodsEntity goodsEntity;
-        int shipping = 0;
-        int onSell = 0;
+        int shipping;
+        int onSell;
         if (id > 0) {
             goodsEntity = goodsRepository.findById(id).orElse(null);
             if (goodsEntity == null) {
@@ -116,7 +116,7 @@ public class Goods {
         } else {
             goodsEntity = new GoodsEntity();
             goodsEntity.setSpec("[]");
-            goodsEntity.setStatus(GoodsStatus.ON_SELL);
+            onSell = shipping = 2;
             goodsEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             modelAndView.addObject("title", "新建商品");
         }
@@ -138,7 +138,7 @@ public class Goods {
                            @RequestParam(defaultValue = "") String name,
                            @RequestParam(defaultValue = "") String des,
                            @RequestParam(defaultValue = "", name = "released") String releasedStr
-                           ) {
+    ) {
         JsonResult jsonResult = new JsonResult();
         String msg;
         name = name.trim();
@@ -193,7 +193,7 @@ public class Goods {
             return jsonResult.toString();
         }
         if (id > 0) {
-            goodsEntity = goodsRepository.findByIdForUpdate(id);
+            goodsEntity = goodsRepository.findByIdForWrite(id);
             if (goodsEntity == null) {
                 jsonResult.setMsg("商品不存在");
                 jsonResult.setUrl("list");
