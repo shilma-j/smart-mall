@@ -1,6 +1,6 @@
 package smart;
 
-import smart.lib.Helper;
+import smart.util.Helper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

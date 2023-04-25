@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import smart.entity.UserEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Pagination;
-import smart.lib.Validate;
+import smart.util.Validate;
 import smart.repository.UserRepository;
 
 import jakarta.annotation.Resource;

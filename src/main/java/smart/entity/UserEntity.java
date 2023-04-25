@@ -16,7 +16,7 @@ public class UserEntity extends BaseEntity {
     private String email;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String lastLoginIp;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp lastLoginTime;
@@ -24,9 +24,9 @@ public class UserEntity extends BaseEntity {
     private String phone;
     private String name;
     private String password;
-    private long gender = 0;
-    private long status = 0;
-    private long surplus = 0;
+    private Long gender;
+    private Long status;
+    private Long surplus;
     private String registerIp;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp registerTime;
@@ -48,11 +48,11 @@ public class UserEntity extends BaseEntity {
         this.email = email;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -115,27 +115,27 @@ public class UserEntity extends BaseEntity {
         this.registerIp = registerIp;
     }
 
-    public long getGender() {
+    public Long getGender() {
         return gender;
     }
 
-    public void setGender(long code) {
+    public void setGender(Long code) {
         this.gender = code;
     }
 
-    public long getStatus() {
+    public Long getStatus() {
         return status;
     }
 
-    public void setStatus(long status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 
-    public long getSurplus() {
+    public Long getSurplus() {
         return surplus;
     }
 
-    public void setSurplus(long surplus) {
+    public void setSurplus(Long surplus) {
         this.surplus = surplus;
     }
 

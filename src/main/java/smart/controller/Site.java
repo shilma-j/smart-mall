@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import smart.cache.*;
 import smart.lib.Captcha;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Pagination;
 import smart.lib.session.Session;
-import smart.lib.utils.RequestUtil;
+import smart.util.RequestUtils;
 import smart.service.GoodsService;
 
 import javax.imageio.ImageIO;
@@ -87,8 +87,8 @@ public class Site {
             @RequestParam(defaultValue = "") String q,
             @RequestParam(defaultValue = "") String sort
     ) {
-        long cid = RequestUtil.getLong(request, "cid");
-        long page = RequestUtil.getLong(request, "page");
+        long cid = RequestUtils.getLong(request, "cid");
+        long page = RequestUtils.getLong(request, "page");
         ModelAndView modelAndView = Helper.newModelAndView("list", request);
         Pagination pagination = goodsService.getGoodsList(cid, q, sort, page);
         modelAndView.addObject("cid", cid);

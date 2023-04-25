@@ -1,10 +1,12 @@
-package smart.lib;
+package smart.util;
 
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import smart.entity.BaseEntity;
 import smart.entity.FiledInfo;
 
@@ -12,10 +14,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 数据库助手类
+ * database utils
  */
 @Component
-public class Db {
+public class DbUtils {
 
     private static JdbcTemplate jdbc;
 
@@ -46,26 +48,17 @@ public class Db {
         jdbc.execute("COMMIT");
     }
 
-    /**
-     * 获取表行数
-     *
-     * @param table 表名
-     * @return 行数
-     */
-    public static long count(String table) {
-        return count(table, null);
-    }
 
     /**
      * 获取表行数
      *
-     * @param table 表名
-     * @param where 条件
+     * @param entityClass 表的实体类
+     * @param where       条件
      * @return 符合条件的行数
      */
-    public static long count(String table, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("SELECT COUNT(*) FROM `%s`", table));
-        if (where == null || where.size() == 0) {
+    public static long count(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
+        StringBuilder sql = new StringBuilder(String.format("SELECT COUNT(*) FROM `%s`", getTableName(entityClass)));
+        if (CollectionUtils.isEmpty(where)) {
             return Helper.longValue(jdbc.queryForObject(sql.toString(), Long.class));
         }
         sql.append(" WHERE");
@@ -79,12 +72,12 @@ public class Db {
     /**
      * 删除符合条件的行
      *
-     * @param table 表明
-     * @param where 条件
+     * @param entityClass 表的实体类
+     * @param where       条件
      * @return 删除的行数
      */
-    public static long delete(String table, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("DELETE FROM `%s` WHERE", table));
+    public static long delete(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
+        StringBuilder sql = new StringBuilder(String.format("DELETE FROM `%s` WHERE", getTableName(entityClass)));
         for (String key : where.keySet()) {
             sql.append(String.format(" `%s`=? AND", key));
         }
@@ -96,12 +89,12 @@ public class Db {
     /**
      * 获取符合条件的第一行
      *
-     * @param table 表明
-     * @param where 条件
+     * @param entityClass 表的实体类
+     * @param where       条件
      * @return row  数据行，没有返回null
      */
-    public static Map<String, Object> first(String table, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("SELECT * FROM `%s`", table));
+    public static Map<String, Object> first(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
+        StringBuilder sql = new StringBuilder(String.format("SELECT * FROM `%s`", getTableName(entityClass)));
         if (where == null || where.size() == 0) {
             sql.append(" LIMIT 1");
             return jdbc.queryForMap(sql.toString());
@@ -126,10 +119,10 @@ public class Db {
      * @param entity table entity
      * @return table name
      */
-    public static String getTableNameByEntity(Class<? extends BaseEntity> entity) {
+    public static String getTableName(Class<? extends BaseEntity> entity) {
         Table annotation = entity.getAnnotation(Table.class);
-        if (annotation == null) {
-            return null;
+        if (annotation == null || !StringUtils.hasLength(annotation.name())) {
+            throw new IllegalArgumentException("entity has not table name");
         }
         return annotation.name();
     }
@@ -143,18 +136,54 @@ public class Db {
         return Helper.longValue(jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class));
     }
 
+
+    /***
+     * entity to map
+     * @param entity  entity
+     * @param fieldNames field names
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> entityToMap(BaseEntity entity, String... fieldNames) {
+        Set<String> names = new HashSet<>();
+        Collections.addAll(names, fieldNames);
+        Map<String, Object> row = new HashMap<>();
+        Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
+        if (fieldNames.length == 0) {
+            fieldInfos.forEach((name, field) -> {
+                var generated = field.getAnnotation(GeneratedValue.class);
+                if (generated != null && generated.strategy() == GenerationType.IDENTITY) {
+                    return;
+                }
+                if (field.getAnnotation(Transient.class) == null) {
+                    row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
+                }
+            });
+        } else {
+            fieldInfos.forEach((name, field) -> {
+                if (field.getAnnotation(Transient.class) == null && names.contains(name)) {
+                    row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
+                }
+                names.remove(name);
+            });
+            if (names.size() > 0) {
+                throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
+            }
+        }
+        return row;
+    }
+
     /**
      * 插入行数据
      *
-     * @param table 表名字
-     * @param row   待插入的行
+     * @param entityClass entity class
+     * @param row         待插入的行
      */
-    public static void insert(String table, Map<String, Object> row) {
+    private static void insert(Class<? extends BaseEntity> entityClass, Map<String, Object> row) {
         if (row.size() == 0) {
             return;
         }
         var colNames = row.keySet().toArray(String[]::new);
-        StringBuilder sql = new StringBuilder(getInsertHeader(table, colNames)).append("(").append("?,".repeat(row.size()));
+        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entityClass), colNames)).append("(").append("?,".repeat(row.size()));
         sql.deleteCharAt(sql.length() - 1).append(")");
         jdbc.update(sql.toString(), row.values().toArray());
     }
@@ -162,11 +191,11 @@ public class Db {
     /**
      * batch insert
      *
-     * @param table 表名字
-     * @param rows  待插入的行
+     * @param entityClass 表实体类
+     * @param maps        待插入的行
      */
-    public static void inserts(String table, Iterable<Map<String, Object>> rows) {
-        var iterator = rows.iterator();
+    public static void insertAll(Class<? extends BaseEntity> entityClass, Collection<Map<String, Object>> maps) {
+        var iterator = maps.iterator();
         if (!iterator.hasNext()) {
             return;
         }
@@ -176,7 +205,7 @@ public class Db {
         if (colNames.length == 0) {
             return;
         }
-        StringBuilder sql = new StringBuilder(getInsertHeader(table, colNames));
+        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entityClass), colNames));
         do {
             sql.append("(");
             for (var colName : colNames) {
@@ -185,11 +214,31 @@ public class Db {
             }
             sql.deleteCharAt(sql.length() - 1).append("),");
             row = iterator.hasNext() ? iterator.next() : null;
-        }
-        while (row != null);
+        } while (row != null);
         sql.deleteCharAt(sql.length() - 1);
         var arr = params.toArray();
         jdbc.update(sql.toString(), arr);
+    }
+
+    /**
+     * batch insert
+     *
+     * @param entities   待插入的行
+     * @param fieldNames 仅插入指定的字段，为空全部插入
+     */
+    public static void insertAll(Collection<? extends BaseEntity> entities, String... fieldNames) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return;
+        }
+        Collection<Map<String, Object>> rows = new Stack<>();
+        Iterator<? extends BaseEntity> iterator = entities.iterator();
+        var entity = iterator.next();
+        var entityClass = entity.getClass();
+        do {
+            rows.add(entityToMap(entity, fieldNames));
+            entity = iterator.hasNext() ? iterator.next() : null;
+        } while (entity != null);
+        insertAll(entityClass, rows);
     }
 
     /**
@@ -198,43 +247,31 @@ public class Db {
      * @param entity record
      */
     public static void insert(BaseEntity entity) {
-        Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
-        Map<String, Object> row = new LinkedHashMap<>();
-
-        fieldInfos.forEach((name, field) -> {
-            var generated = field.getAnnotation(GeneratedValue.class);
-            if (generated != null && generated.strategy() == GenerationType.IDENTITY) {
-                return;
-            }
-            if (field.getAnnotation(Transient.class) == null) {
-                row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
-            }
-        });
-        insert(getTableNameByEntity(entity.getClass()), row);
+        insert(entity.getClass(), entityToMap(entity));
     }
 
     /**
      * insert row
      *
      * @param entity     record
-     * @param filedNames insert with filed names, default all
+     * @param fieldNames insert with filed names, default all
      */
-    public static void insert(BaseEntity entity, String... filedNames) {
+    public static void insert(BaseEntity entity, String... fieldNames) {
         Set<String> names = new HashSet<>();
-        Collections.addAll(names, filedNames);
+        Collections.addAll(names, fieldNames);
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
         Map<String, Object> row = new LinkedHashMap<>();
 
         fieldInfos.forEach((name, field) -> {
-            if (field.getAnnotation(Transient.class) == null && (filedNames.length == 0 || names.contains(name))) {
-                row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
+            if (field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || names.contains(name))) {
+                row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
             }
             names.remove(name);
         });
         if (names.size() > 0) {
             throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
         }
-        insert(getTableNameByEntity(entity.getClass()), row);
+        insert(entity.getClass(), row);
     }
 
     /**
@@ -269,12 +306,12 @@ public class Db {
     /**
      * 更新行数据
      *
-     * @param table 表名字
-     * @param where 条件
-     * @param row   待更新的列
+     * @param entityClass 表的实体类
+     * @param where       条件
+     * @param row         待更新的列
      */
-    public static int update(String table, Map<String, Object> where, Map<String, Object> row) {
-        StringBuilder sql = new StringBuilder(String.format("UPDATE `%s` SET", table));
+    public static int update(Class<? extends BaseEntity> entityClass, Map<String, Object> where, Map<String, Object> row) {
+        StringBuilder sql = new StringBuilder(String.format("UPDATE `%s` SET", getTableName(entityClass)));
         List<Object> params = new LinkedList<>();
         for (String key : row.keySet()) {
             if (row.get(key) != null) {
@@ -295,13 +332,13 @@ public class Db {
      * update entity by primary key
      *
      * @param entity     row
-     * @param filedNames update with filed names, default all
+     * @param fieldNames update with filed names, default all
      * @return rows num
      */
-    public static int update(BaseEntity entity, String... filedNames) {
+    public static int update(BaseEntity entity, String... fieldNames) {
         AtomicReference<FiledInfo> idFiledInfo = new AtomicReference<>();
         Set<String> names = new HashSet<>();
-        Collections.addAll(names, filedNames);
+        Collections.addAll(names, fieldNames);
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
         Map<String, Object> row = new LinkedHashMap<>();
         fieldInfos.forEach((name, field) -> {
@@ -310,8 +347,8 @@ public class Db {
                     throw new IllegalArgumentException("duplicate primary key");
                 }
                 idFiledInfo.set(field);
-            } else if (field.getAnnotation(Transient.class) == null && (filedNames.length == 0 || names.contains(name))) {
-                row.put(Db.camelCaseToUnderscoresNaming(name), field.getValue());
+            } else if (field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || names.contains(name))) {
+                row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
             }
             names.remove(name);
         });
@@ -322,8 +359,7 @@ public class Db {
         if (names.size() > 0) {
             throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
         }
-
-        return update(getTableNameByEntity(entity.getClass()), Map.of(primaryKey.getName(), primaryKey.getValue()), row);
+        return update(entity.getClass(), Map.of(primaryKey.getName(), primaryKey.getValue()), row);
     }
 
     private static String getInsertHeader(String tableName, String... colNames) {
@@ -340,6 +376,6 @@ public class Db {
 
     @Autowired
     public void setJdbc(JdbcTemplate jdbc) {
-        Db.jdbc = jdbc;
+        DbUtils.jdbc = jdbc;
     }
 }

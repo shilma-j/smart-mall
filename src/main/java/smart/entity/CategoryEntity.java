@@ -9,27 +9,27 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @Table(name = "t_category")
 public class CategoryEntity extends BaseEntity {
-    private long i;
+    private Long i;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long parentId;
+    private Long id;
+    private Long parentId;
     private String name;
-    private long recommend;
+    private Long recommend;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getI() {
+    public Long getI() {
         return i;
     }
 
-    public void setI(long i) {
+    public void setI(Long i) {
         this.i = i;
     }
 
@@ -41,19 +41,19 @@ public class CategoryEntity extends BaseEntity {
         this.name = name;
     }
 
-    public long getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(long parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
-    public long getRecommend() {
+    public Long getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(long recommend) {
+    public void setRecommend(Long recommend) {
         this.recommend = recommend;
     }
 }

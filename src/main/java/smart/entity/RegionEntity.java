@@ -11,15 +11,15 @@ import org.hibernate.annotations.DynamicUpdate;
 public class RegionEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long code;
+    private Long code;
     private String name;
 
 
-    public long getCode() {
+    public Long getCode() {
         return code;
     }
 
-    public void setCode(long code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 

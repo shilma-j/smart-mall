@@ -11,7 +11,7 @@ import smart.cache.BrandCache;
 import smart.config.AppConfig;
 import smart.entity.BrandEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.JsonResult;
 import smart.lib.Pagination;
 import smart.repository.BrandRepository;

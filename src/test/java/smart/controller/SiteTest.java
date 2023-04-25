@@ -10,8 +10,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import smart.lib.Captcha;
-import smart.lib.Helper;
-import smart.lib.UserAgent;
+import smart.util.Helper;
+import smart.util.UserAgent;
 import smart.lib.session.Session;
 
 import java.util.Objects;

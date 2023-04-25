@@ -1,13 +1,15 @@
-package smart.lib;
+package smart.lib.thymeleaf;
 
 import smart.cache.ExpressCache;
 import smart.cache.PaymentCache;
 import smart.cache.RegionCache;
 import smart.cache.SystemCache;
+import smart.lib.Region;
 import smart.lib.status.AccountStatus;
 import smart.lib.status.OrderGoodsStatus;
 import smart.lib.status.OrderStatus;
 import smart.lib.status.GenderInfo;
+import smart.util.Helper;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -143,11 +145,11 @@ public class HelperUtils {
     /**
      * 格式化价格
      *
-     * @param l 价格(分)
+     * @param price 价格(分)
      * @return 价格(元, 保留两位小数)
      */
-    public static String priceFormat(long l) {
-        return Helper.priceFormat(l);
+    public static String priceFormat(Long price) {
+        return price == null ? null : Helper.priceFormat(price);
     }
 
     /**

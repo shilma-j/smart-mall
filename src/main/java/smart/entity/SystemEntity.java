@@ -11,7 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 public class SystemEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String entity;
     private String attribute;
     @Column(columnDefinition = "text")
@@ -19,11 +19,11 @@ public class SystemEntity extends BaseEntity {
 
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

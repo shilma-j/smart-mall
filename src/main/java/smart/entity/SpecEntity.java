@@ -12,18 +12,18 @@ import jakarta.persistence.*;
 public class SpecEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String name;
     private String note;
-    private long sort;
+    private Long sort;
     @Column(columnDefinition = "text")
     private String list;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,11 +43,11 @@ public class SpecEntity extends BaseEntity {
         this.note = note;
     }
 
-    public long getSort() {
+    public Long getSort() {
         return sort;
     }
 
-    public void setSort(long sort) {
+    public void setSort(Long sort) {
         this.sort = sort;
     }
 

@@ -2,6 +2,7 @@ package smart.lib;
 
 
 import smart.lib.session.Session;
+import smart.util.Helper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

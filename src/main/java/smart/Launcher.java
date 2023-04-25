@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import smart.cache.GoodsCache;
 import smart.config.AppConfig;
-import smart.lib.Helper;
+import smart.util.Helper;
 
 import java.io.IOException;
 import java.net.URI;

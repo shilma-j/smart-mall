@@ -1,6 +1,8 @@
-package smart.lib;
+package smart.util;
 
+import smart.lib.Captcha;
 import smart.lib.session.Session;
+import smart.util.Helper;
 
 import java.util.regex.Pattern;
 

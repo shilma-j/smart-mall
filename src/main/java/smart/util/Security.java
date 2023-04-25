@@ -1,4 +1,4 @@
-package smart.lib;
+package smart.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-import static smart.lib.Helper.bytesToHex;
+import static smart.util.Helper.bytesToHex;
 
 /**
  * 安全助手函数

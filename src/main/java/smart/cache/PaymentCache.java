@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import smart.lib.Json;
-import smart.lib.Security;
+import smart.util.Security;
 import smart.lib.payment.Alipay;
 import smart.lib.payment.Payment;
 import smart.repository.PaymentRepository;
@@ -35,17 +35,17 @@ public class PaymentCache {
         paymentRepository.findAvailable().forEach(row -> {
             String config = Security.decrypt(row.getConfig());
             if (config == null) {
-                log.error("decrypt payment config failure, payment name: %s" + row.getName());
+                log.error("decrypt payment config failure, payment name: " + row.getName());
                 return;
             }
             if (config.length() < 10) {
-                log.error("payment config content error, payment name: %s" + row.getName());
+                log.error("payment config content error, payment name: " + row.getName());
                 return;
             }
 
             Map<String, String> map = Json.decode(config);
             if (map == null || map.keySet().size() < 3) {
-                log.error("payment config error, name: %s" + row.getName());
+                log.error("payment config error, name: " + row.getName());
             }
 
             Payment payment = null;
@@ -55,7 +55,7 @@ public class PaymentCache {
                     payment.setConfig(map);
                     break;
                 default:
-                    log.error("unknown payment, name: %s" + row.getName());
+                    log.error("unknown payment, name: " + row.getName());
             }
             if (payment != null) {
                 names.add(payment.getName());

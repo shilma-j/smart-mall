@@ -15,7 +15,7 @@ public class PaymentEntity extends BaseEntity {
     private boolean enable;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String name;
     private String name1;
     private int recommend;
@@ -37,11 +37,11 @@ public class PaymentEntity extends BaseEntity {
         this.enable = enable;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,7 +1,7 @@
 package smart.scheduled;
 
 import smart.config.RedisConfig;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.session.ApiSession;
 import smart.lib.session.Session;
 import org.apache.commons.logging.Log;
@@ -25,7 +25,6 @@ public class SessionTask {
     public void checkKey(String match, long timeout) {
         var redisTemplate = RedisConfig.getStringObjectRedisTemplate();
         redisTemplate.execute((RedisCallback<Void>) conn -> {
-
             /* 检查清理 http session */
             long ttl;
             String key;

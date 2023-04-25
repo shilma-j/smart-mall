@@ -1,7 +1,7 @@
 package smart;
 
 import smart.authentication.UserToken;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

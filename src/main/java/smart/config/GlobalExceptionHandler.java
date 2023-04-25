@@ -3,7 +3,7 @@ package smart.config;
 import smart.authentication.AdminAuthException;
 import smart.authentication.UserAuthException;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.lib.JsonResult;
 import org.apache.commons.logging.Log;

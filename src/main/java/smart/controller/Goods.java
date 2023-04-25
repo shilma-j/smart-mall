@@ -6,7 +6,7 @@ import smart.cache.GoodsCache;
 import smart.cache.SystemCache;
 import smart.entity.CategoryEntity;
 import smart.entity.GoodsEntity;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;

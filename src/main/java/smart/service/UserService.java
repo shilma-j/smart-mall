@@ -6,13 +6,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import smart.authentication.UserToken;
 import smart.entity.UserEntity;
-import smart.lib.Db;
-import smart.lib.Helper;
-import smart.lib.Security;
-import smart.lib.Validate;
 import smart.lib.session.Session;
 import smart.lib.status.AccountStatus;
 import smart.repository.UserRepository;
+import smart.util.DbUtils;
+import smart.util.Helper;
+import smart.util.Security;
+import smart.util.Validate;
 
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
@@ -33,7 +33,7 @@ public class UserService {
         userEntity.setId(uid);
         userEntity.setPassword(Security.sha3_256(Security.sha3_256(password) + Security.sha3_256(salt)));
         userEntity.setSalt(salt);
-        if (Db.update(userEntity, "password", "salt") == 0) {
+        if (DbUtils.update(userEntity, "password", "salt") == 0) {
             return null;
         }
         return salt;
@@ -95,7 +95,7 @@ public class UserService {
      */
 
     public String register(String name, String password, String registerIp) {
-        if (Db.first("t_user", Map.of("name", name)) != null) {
+        if (DbUtils.first(UserEntity.class, Map.of("name", name)) != null) {
             return "用户名已被注册";
         }
         String salt = Helper.randomString(SALT_LENGTH);
@@ -106,13 +106,13 @@ public class UserService {
         userEntity.setRegisterTime(new Timestamp(System.currentTimeMillis()));
         userEntity.setRegisterIp(registerIp);
         try {
-            Db.insert(userEntity, "name", "password", "salt",
+            DbUtils.insert(userEntity, "name", "password", "salt",
                     "registerTime", "registerIp");
         } catch (DuplicateKeyException ex) {
-            Db.rollback();
+            DbUtils.rollback();
             return "用户名已被注册";
         } catch (Exception ex) {
-            Db.rollback();
+            DbUtils.rollback();
             ex.printStackTrace();
             return "未知错误,请联系管理员.";
         }

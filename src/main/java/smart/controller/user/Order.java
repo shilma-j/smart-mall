@@ -6,7 +6,7 @@ import smart.cache.PaymentCache;
 import smart.cache.SystemCache;
 import smart.entity.OrderEntity;
 import smart.entity.OrderGoodsEntity;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.JsonResult;
 import smart.lib.Pagination;
 import smart.lib.payment.Payment;

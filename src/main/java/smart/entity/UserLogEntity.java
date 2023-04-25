@@ -13,18 +13,18 @@ import java.sql.Timestamp;
 public class UserLogEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long uid;
+    private Long id;
+    private Long uid;
     private int type;
     private String msg;
     private String ip;
     private Timestamp time;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,11 +60,11 @@ public class UserLogEntity extends BaseEntity {
         this.type = type;
     }
 
-    public long getUid() {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(long uid) {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 }

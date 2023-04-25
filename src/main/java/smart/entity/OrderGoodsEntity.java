@@ -12,50 +12,50 @@ public class OrderGoodsEntity extends BaseEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long orderNo;
-    private long goodsId;
-    private long specId;
+    private Long id;
+    private Long orderNo;
+    private Long goodsId;
+    private Long specId;
     private String specDes;
     private String goodsName;
-    private long price;
-    private long weight;
-    private long num;
-    private long status;
+    private Long price;
+    private Long weight;
+    private Long num;
+    private Long status;
     private String img;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
 
-    public long getOrderNo() {
+    public Long getOrderNo() {
         return orderNo;
     }
 
-    public void setOrderNo(long orderNo) {
+    public void setOrderNo(Long orderNo) {
         this.orderNo = orderNo;
     }
 
-    public long getGoodsId() {
+    public Long getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(long goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 
 
-    public long getSpecId() {
+    public Long getSpecId() {
         return specId;
     }
 
-    public void setSpecId(long specId) {
+    public void setSpecId(Long specId) {
         this.specId = specId;
     }
 
@@ -76,38 +76,38 @@ public class OrderGoodsEntity extends BaseEntity {
     }
 
 
-    public long getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
 
-    public long getWeight() {
+    public Long getWeight() {
         return weight;
     }
 
-    public void setWeight(long weight) {
+    public void setWeight(Long weight) {
         this.weight = weight;
     }
 
 
-    public long getNum() {
+    public Long getNum() {
         return num;
     }
 
-    public void setNum(long num) {
+    public void setNum(Long num) {
         this.num = num;
     }
 
 
-    public long getStatus() {
+    public Long getStatus() {
         return status;
     }
 
-    public void setStatus(long status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 

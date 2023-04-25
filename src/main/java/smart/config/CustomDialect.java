@@ -1,6 +1,6 @@
 package smart.config;
 
-import smart.lib.HelperUtils;
+import smart.lib.thymeleaf.HelperUtils;
 import org.thymeleaf.context.IExpressionContext;
 import org.thymeleaf.dialect.AbstractDialect;
 import org.thymeleaf.dialect.IExpressionObjectDialect;

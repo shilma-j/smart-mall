@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 public class ArticleEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long cateId;
+    private Long id;
+    private Long cateId;
 
     @Transient
     private String cateName;
@@ -22,24 +22,24 @@ public class ArticleEntity extends BaseEntity {
 
     @Column(columnDefinition = "text")
     private String content;
-    private long recommend;
+    private Long recommend;
     private Timestamp releaseTime;
     private boolean visible;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getCateId() {
+    public Long getCateId() {
         return cateId;
     }
 
-    public void setCateId(long cateId) {
+    public void setCateId(Long cateId) {
         this.cateId = cateId;
     }
 
@@ -67,11 +67,11 @@ public class ArticleEntity extends BaseEntity {
         this.content = content;
     }
 
-    public long getRecommend() {
+    public Long getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(long recommend) {
+    public void setRecommend(Long recommend) {
         this.recommend = recommend;
     }
 

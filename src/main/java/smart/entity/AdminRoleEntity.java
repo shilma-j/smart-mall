@@ -11,17 +11,17 @@ import org.hibernate.annotations.DynamicUpdate;
 public class AdminRoleEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String name;
 
     @Column(columnDefinition = "text")
     private String authority;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

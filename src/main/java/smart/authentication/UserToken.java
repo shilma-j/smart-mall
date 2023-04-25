@@ -2,7 +2,7 @@ package smart.authentication;
 
 import smart.config.RedisConfig;
 import smart.entity.UserEntity;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.lib.session.Session;
 

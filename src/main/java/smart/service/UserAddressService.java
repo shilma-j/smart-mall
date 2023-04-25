@@ -3,7 +3,7 @@ package smart.service;
 import jakarta.annotation.Resource;
 import smart.config.AppConfig;
 import smart.entity.UserAddressEntity;
-import smart.lib.Db;
+import smart.util.DbUtils;
 import smart.repository.UserAddressRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class UserAddressService {
         AppConfig.getJdbcTemplate().update(sql,
                 entity.getUserId(), entity.getConsignee(), entity.getPhone(),
                 entity.getRegion(), entity.getAddress(), entity.getDft());
-        entity.setId(Db.getLastInsertId());
+        entity.setId(DbUtils.getLastInsertId());
         if (entity.getDft() > 0) {
             AppConfig.getJdbcTemplate().update("update t_user_address set dft=0 where user_id=? and id != ?",
                     entity.getUserId(), entity.getId());

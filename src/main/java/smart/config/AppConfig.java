@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.ShutdownThread;
 
 import java.io.File;

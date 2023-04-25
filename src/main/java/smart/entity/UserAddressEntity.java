@@ -11,18 +11,18 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "t_user_address")
 public class UserAddressEntity extends BaseEntity {
     private String address;
-    // 默认地址
-    private long dft;
+    // 默认地址 default address
+    private Long dft;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     // 收货人
     private String consignee;
     private String phone;
-    private long region;
+    private Long region;
 
     @JsonIgnore
-    private long userId;
+    private Long userId;
 
 
     public String getAddress() {
@@ -33,19 +33,19 @@ public class UserAddressEntity extends BaseEntity {
         this.address = address;
     }
 
-    public long getDft() {
+    public Long getDft() {
         return dft;
     }
 
-    public void setDft(long dft) {
+    public void setDft(Long dft) {
         this.dft = dft;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,19 +65,19 @@ public class UserAddressEntity extends BaseEntity {
         this.phone = phone;
     }
 
-    public long getRegion() {
+    public Long getRegion() {
         return region;
     }
 
-    public void setRegion(long region) {
+    public void setRegion(Long region) {
         this.region = region;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

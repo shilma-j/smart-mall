@@ -1,7 +1,8 @@
-package smart.lib;
+package smart.util;
 
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
+import smart.lib.JsonResult;
 import smart.lib.session.Session;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
 /**
  * helper class
  */
-public class Helper {
+public final class Helper {
 
     // default date formatter
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -398,13 +399,13 @@ public class Helper {
     /**
      * 格式化价格
      *
-     * @param l 价格(分)
+     * @param price 价格(分)
      * @return 价格(元, 保留两位小数)
      */
-    public static String priceFormat(long l) {
-        String prefix = l < 0 ? "-" : "";
-        l = Math.abs(l);
-        return String.format("%s%d.%02d", prefix, l / 100, l % 100);
+    public static String priceFormat(long price) {
+        String prefix = price < 0 ? "-" : "";
+        price = Math.abs(price);
+        return String.format("%s%d.%02d", prefix, price / 100, price % 100);
     }
 
     /**

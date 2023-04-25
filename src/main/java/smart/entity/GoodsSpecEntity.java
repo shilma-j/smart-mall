@@ -12,65 +12,65 @@ public class GoodsSpecEntity extends BaseEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long goodsId;
-    private long idx;
-    private long price;
-    private long stock;
-    private long weight;
+    private Long id;
+    private Long goodsId;
+    private Long idx;
+    private Long price;
+    private Long stock;
+    private Long weight;
     @Column(columnDefinition = "text")
     private String des;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
 
-    public long getGoodsId() {
+    public Long getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(long goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 
 
-    public long getIdx() {
+    public Long getIdx() {
         return idx;
     }
 
-    public void setIdx(long idx) {
+    public void setIdx(Long idx) {
         this.idx = idx;
     }
 
-    public long getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
 
-    public long getStock() {
+    public Long getStock() {
         return stock;
     }
 
-    public void setStock(long stock) {
+    public void setStock(Long stock) {
         this.stock = stock;
     }
 
 
-    public long getWeight() {
+    public Long getWeight() {
         return weight;
     }
 
-    public void setWeight(long weight) {
+    public void setWeight(Long weight) {
         this.weight = weight;
     }
 

@@ -10,11 +10,14 @@ import org.springframework.web.servlet.ModelAndView;
 import smart.cache.SpecCache;
 import smart.entity.SpecEntity;
 import smart.lib.*;
+import smart.lib.thymeleaf.HelperUtils;
 import smart.repository.SpecRepository;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import smart.util.Helper;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class Spec {
             modelAndView.addObject("title", "修改规格");
         } else {
             specEntity = new SpecEntity();
-            specEntity.setSort(50);
+            specEntity.setSort(50L);
             specEntity.setList("[]");
             modelAndView.addObject("title", "新建规格");
         }

@@ -16,6 +16,11 @@ import smart.repository.ArticleRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import smart.service.ArticleService;
+import smart.util.DbUtils;
+import smart.util.Helper;
+import smart.util.RequestUtils;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +33,9 @@ public class Article {
 
     @Resource
     ArticleRepository articleRepository;
+
+    @Resource
+    ArticleService articleService;
 
     @Resource
     ArticleCategoryRepository articleCategoryRepository;
@@ -43,7 +51,7 @@ public class Article {
             return jsonResult.toString();
         }
         articleRepository.delete(articleEntity);
-        Db.commit();
+        DbUtils.commit();
         ArticleCache.init();
         jsonResult.setMsg("已删除文章: " + articleEntity.getTitle());
         jsonResult.setUrl("list");
@@ -58,7 +66,7 @@ public class Article {
         if (id == 0) {
             articleEntity = new ArticleEntity();
             articleEntity.setReleaseTime(new Timestamp(System.currentTimeMillis()));
-            articleEntity.setRecommend(100);
+            articleEntity.setRecommend(1000L);
             view.addObject("title", "新建文章");
         } else {
             articleEntity = articleRepository.findById(id).orElse(null);
@@ -117,10 +125,11 @@ public class Article {
         articleEntity.setTitle(title);
         articleEntity.setContent(content);
         articleEntity.setCateId(cateId);
+        articleEntity.setRecommend(RequestUtils.getLong(request, "recommend"));
         articleEntity.setReleaseTime(new Timestamp(releaseTime.getTime()));
         articleEntity.setVisible(visible);
         articleRepository.save(articleEntity);
-        Db.commit();
+        DbUtils.commit();
         ArticleCache.init();
         jsonResult.setUrl("list");
         return AdminHelper.msgPage(jsonResult, request);
@@ -128,30 +137,11 @@ public class Article {
 
     @GetMapping(value = "list")
     public ModelAndView getList(HttpServletRequest request) {
-        long cateId = Helper.longValue(request.getParameter("cateId"));
-        String sqlWhere = cateId > 0 ? "where a.cateId=" + cateId : "";
-        String sql = """
-                select a.id,
-                       a.cate_id,
-                       ac.name as cate_name,
-                       a.content,
-                       a.title,
-                       a.release_time as release_time,
-                       a.visible,
-                       a.recommend
-                from t_article a
-                         left join t_article_category ac on a.cate_id = ac.id
-                %s
-                order by a.release_time desc, a.recommend desc
-                """;
-        sql = String.format(sql, sqlWhere);
-        Pagination pagination = Pagination.newBuilder(sql)
-                .page(request)
-                .query(Map.of("cateId", Long.toString(cateId)))
-                .build();
+        long cateId = RequestUtils.getLong(request, "cateId");
+        long page = RequestUtils.getLong(request, "page");
         ModelAndView view = Helper.newModelAndView("admin/article/article/list", request);
         view.addObject("cateId", cateId);
-        view.addObject("pagination", pagination);
+        view.addObject("pagination", articleService.getAll(cateId, page));
         view.addObject("title", "文章列表");
         return view;
     }

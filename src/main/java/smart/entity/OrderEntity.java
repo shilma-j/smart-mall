@@ -12,40 +12,39 @@ import java.sql.Timestamp;
 @Table(name = "t_order")
 public class OrderEntity extends BaseEntity {
     private String address;
-    private long amount;
+    private Long amount;
     private Timestamp confirmTime;
     private String consignee;
     private Timestamp createTime;
-    private int deleted;
-    private long expressId;
+    private Integer deleted;
+    private Long expressId;
     private String expressNo;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long no;
+    private Long id;
+    private Long no;
     private Timestamp payTime;
     private String payName;
-    private long payAmount;
+    private Long payAmount;
     private String payNo;
     private String phone;
 
-    private long region;
+    private Long region;
     private String remark;
-    private long shippingFee;
+    private Long shippingFee;
     private Timestamp shippingTime;
-    private long status;
-    private long source;
-    private long userId;
+    private Long status;
+    private Long source;
+    private Long userId;
 
     public String getAddress() {
         return address;
     }
 
-    public long getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
@@ -77,19 +76,19 @@ public class OrderEntity extends BaseEntity {
         this.createTime = createTime;
     }
 
-    public int getDeleted() {
+    public Integer getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(int deleted) {
+    public void setDeleted(Integer deleted) {
         this.deleted = deleted;
     }
 
-    public long getExpressId() {
+    public Long getExpressId() {
         return expressId;
     }
 
-    public void setExpressId(long expressId) {
+    public void setExpressId(Long expressId) {
         this.expressId = expressId;
     }
 
@@ -102,19 +101,19 @@ public class OrderEntity extends BaseEntity {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getNo() {
+    public Long getNo() {
         return no;
     }
 
-    public void setNo(long no) {
+    public void setNo(Long no) {
         this.no = no;
     }
 
@@ -135,11 +134,11 @@ public class OrderEntity extends BaseEntity {
         this.payName = payName;
     }
 
-    public long getPayAmount() {
+    public Long getPayAmount() {
         return payAmount;
     }
 
-    public void setPayAmount(long payAmount) {
+    public void setPayAmount(Long payAmount) {
         this.payAmount = payAmount;
     }
 
@@ -159,11 +158,11 @@ public class OrderEntity extends BaseEntity {
         this.phone = phone;
     }
 
-    public long getRegion() {
+    public Long getRegion() {
         return region;
     }
 
-    public void setRegion(long region) {
+    public void setRegion(Long region) {
         this.region = region;
     }
 
@@ -175,11 +174,11 @@ public class OrderEntity extends BaseEntity {
         this.remark = remark;
     }
 
-    public long getShippingFee() {
+    public Long getShippingFee() {
         return shippingFee;
     }
 
-    public void setShippingFee(long shippingFee) {
+    public void setShippingFee(Long shippingFee) {
         this.shippingFee = shippingFee;
     }
 
@@ -191,27 +190,27 @@ public class OrderEntity extends BaseEntity {
         this.shippingTime = shippingTime;
     }
 
-    public long getStatus() {
+    public Long getStatus() {
         return status;
     }
 
-    public void setStatus(long status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 
-    public long getSource() {
+    public Long getSource() {
         return source;
     }
 
-    public void setSource(long source) {
+    public void setSource(Long source) {
         this.source = source;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

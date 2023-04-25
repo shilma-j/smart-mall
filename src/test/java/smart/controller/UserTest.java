@@ -14,9 +14,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import smart.entity.UserEntity;
 import smart.lib.Captcha;
-import smart.lib.Db;
-import smart.lib.Helper;
-import smart.lib.UserAgent;
+import smart.util.Helper;
+import smart.util.UserAgent;
 import smart.lib.session.Session;
 import smart.repository.UserRepository;
 
@@ -24,7 +23,6 @@ import java.util.Objects;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@Timeout(2)
 public class UserTest {
     @Resource
     UserRepository userRepository;
@@ -41,6 +39,7 @@ public class UserTest {
     }
 
     @Test
+    @Timeout(2)
     @Transactional
     public void registerTest() throws Exception {
         var response = mockMvc.perform(MockMvcRequestBuilders.get("/captcha")).andReturn().getResponse();
@@ -62,7 +61,7 @@ public class UserTest {
         UserEntity userEntity = userRepository.findByNameForWrite(name);
         Assertions.assertNotNull(userEntity);
         userEntity.setEmail("test@test.test");
-        userEntity.setSurplus(999999999);
+        userEntity.setSurplus(999999999L);
         userRepository.saveAndFlush(userEntity);
 
         String[] urls = {"/user/address", "/user/central", "/user/info", "/user/order", "/user/password"};

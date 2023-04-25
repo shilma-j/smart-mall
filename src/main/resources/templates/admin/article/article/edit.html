@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/components::head(script=~{::head/script})">
+<head th:replace="~{admin/components::head(script=~{::head/script})}">
     <script th:src="${#helpers.retouch('/js/tinymce/tinymce.min.js')}"></script>
 </head>
 <body class="container-fluid">

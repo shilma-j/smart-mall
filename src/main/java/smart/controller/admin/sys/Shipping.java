@@ -5,7 +5,7 @@ import smart.cache.RegionCache;
 import smart.config.AppConfig;
 import smart.entity.ExpressCompanyEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.lib.JsonResult;
 import smart.lib.express.FreeRule;
@@ -54,7 +54,7 @@ public class Shipping {
             modelAndView.addObject("title", "修改快递公司信息");
         } else {
             entity = new ExpressCompanyEntity();
-            entity.setRecommend(100);
+            entity.setRecommend(100L);
             modelAndView.addObject("title", "新建快递公司信息");
         }
         modelAndView.addObject("entity", entity);

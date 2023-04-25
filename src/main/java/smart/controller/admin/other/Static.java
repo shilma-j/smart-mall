@@ -1,5 +1,7 @@
 package smart.controller.admin.other;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,12 +12,10 @@ import org.springframework.web.servlet.ModelAndView;
 import smart.cache.SystemCache;
 import smart.entity.SystemEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Db;
-import smart.lib.Helper;
 import smart.lib.JsonResult;
+import smart.util.DbUtils;
+import smart.util.Helper;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import java.util.Map;
 
 @Controller(value = "admin/other/static")
@@ -39,7 +39,7 @@ public class Static {
         if (jsVersion == null) {
             jsVersion = "";
         }
-        Db.update(Db.getTableNameByEntity(SystemEntity.class),
+        DbUtils.update(SystemEntity.class,
                 Map.of("entity", "sys", "attribute", "jsVersion"),
                 Map.of("value", jsVersion));
         SystemCache.setJsVersion(jsVersion);

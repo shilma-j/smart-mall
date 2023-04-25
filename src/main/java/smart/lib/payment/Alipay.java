@@ -2,7 +2,7 @@ package smart.lib.payment;
 
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.service.OrderService;
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;

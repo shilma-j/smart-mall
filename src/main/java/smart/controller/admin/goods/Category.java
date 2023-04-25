@@ -4,7 +4,7 @@ import smart.cache.CategoryCache;
 import smart.cache.GoodsCache;
 import smart.entity.CategoryEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.JsonResult;
 import smart.repository.CategoryRepository;
 import smart.repository.GoodsRepository;
@@ -73,7 +73,7 @@ public class Category {
         } else {
             categoryEntity = new CategoryEntity();
             categoryEntity.setParentId(Helper.longValue(request.getParameter("parentId")));
-            categoryEntity.setRecommend(1000);
+            categoryEntity.setRecommend(1000L);
             modelAndView.addObject("title", "新建商品分类");
         }
         modelAndView.addObject("list", CategoryCache.getList());

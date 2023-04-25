@@ -1,10 +1,12 @@
 package smart.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import smart.config.AppConfig;
 import smart.entity.BaseEntity;
+import smart.util.DbUtils;
+import smart.util.RequestUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -135,7 +137,7 @@ public final class Pagination {
         rows = new ArrayList<>();
         AppConfig.getJdbcTemplate().queryForList(sql1, params).forEach(row -> {
             Map<String, Object> row1 = new LinkedHashMap<>();
-            row.keySet().forEach(key -> row1.put(Db.underscoresToCamelCaseNaming(key), row.get(key)));
+            row.keySet().forEach(key -> row1.put(DbUtils.underscoresToCamelCaseNaming(key), row.get(key)));
             rows.add(row1);
         });
 
@@ -143,7 +145,7 @@ public final class Pagination {
     }
 
     /**
-     * 生成分页页脚
+     * 生成网页分页页脚
      *
      * @return html
      */
@@ -311,7 +313,7 @@ public final class Pagination {
          * @return this
          */
         public Builder page(HttpServletRequest request) {
-            page(Helper.longValue(request.getParameter("page")));
+            page(request, "page");
             return this;
         }
 
@@ -323,7 +325,7 @@ public final class Pagination {
          * @return this
          */
         public Builder page(HttpServletRequest request, String name) {
-            page(Helper.longValue(request.getParameter(name)));
+            page(RequestUtils.getLong(request, name));
             return this;
         }
 

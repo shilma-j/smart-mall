@@ -18,11 +18,11 @@ public class ArticleCategoryEntity extends BaseEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String name;
     private boolean footerShow;
 
-    private long recommend;
+    private Long recommend;
 
 
     public List<ArticleEntity> getArticles() {
@@ -33,11 +33,11 @@ public class ArticleCategoryEntity extends BaseEntity {
         this.articles = articles;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,11 +57,11 @@ public class ArticleCategoryEntity extends BaseEntity {
         this.footerShow = footerShow;
     }
 
-    public long getRecommend() {
+    public Long getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(long recommend) {
+    public void setRecommend(Long recommend) {
         this.recommend = recommend;
     }
 }

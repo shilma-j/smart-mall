@@ -1,11 +1,11 @@
 package smart.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.jdbc.core.RowMapper;
 
-import jakarta.persistence.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -17,9 +17,9 @@ import java.sql.Timestamp;
 public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
-    private long brandId;
-    private long cateId;
+    private Long id;
+    private Long brandId;
+    private Long cateId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -29,35 +29,35 @@ public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
     private String des;
     @Column(columnDefinition = "text")
     private String imgs;
-    private long price;
-    private long stock;
-    private long weight;
-    private long recommend = 1000;
+    private Long price;
+    private Long stock;
+    private Long weight;
+    private Long recommend;
     @Column(columnDefinition = "text")
     private String spec;
-    private long status;
+    private Long status;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getBrandId() {
+    public Long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(long brandId) {
+    public void setBrandId(Long brandId) {
         this.brandId = brandId;
     }
 
-    public long getCateId() {
+    public Long getCateId() {
         return cateId;
     }
 
-    public void setCateId(long cateId) {
+    public void setCateId(Long cateId) {
         this.cateId = cateId;
     }
 
@@ -101,35 +101,35 @@ public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
         this.imgs = imgs;
     }
 
-    public long getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public long getStock() {
+    public Long getStock() {
         return stock;
     }
 
-    public void setStock(long stock) {
+    public void setStock(Long stock) {
         this.stock = stock;
     }
 
-    public long getWeight() {
+    public Long getWeight() {
         return weight;
     }
 
-    public void setWeight(long weight) {
+    public void setWeight(Long weight) {
         this.weight = weight;
     }
 
-    public long getRecommend() {
+    public Long getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(long recommend) {
+    public void setRecommend(Long recommend) {
         this.recommend = recommend;
     }
 
@@ -141,11 +141,11 @@ public class GoodsEntity extends BaseEntity implements RowMapper<GoodsEntity> {
         this.spec = spec;
     }
 
-    public long getStatus() {
+    public Long getStatus() {
         return status;
     }
 
-    public void setStatus(long status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 

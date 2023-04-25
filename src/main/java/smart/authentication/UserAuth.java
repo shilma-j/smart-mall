@@ -1,6 +1,6 @@
 package smart.authentication;
 
-import smart.lib.Helper;
+import smart.util.Helper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

@@ -5,10 +5,10 @@ import smart.authentication.UserToken;
 import smart.cache.RegionCache;
 import smart.cache.SystemCache;
 import smart.entity.UserAddressEntity;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.lib.JsonResult;
-import smart.lib.Validate;
+import smart.util.Validate;
 import smart.repository.UserAddressRepository;
 import smart.service.UserAddressService;
 import org.springframework.http.MediaType;
@@ -101,7 +101,7 @@ public class Address {
         userAddressEntity.setPhone(phone);
         userAddressEntity.setRegion(code);
         if (Helper.longValue(request.getParameter("dft")) > 0) {
-            userAddressEntity.setDft(1);
+            userAddressEntity.setDft(1L);
         }
         if (id > 0) {
             userAddressService.updateAddress(userAddressEntity);

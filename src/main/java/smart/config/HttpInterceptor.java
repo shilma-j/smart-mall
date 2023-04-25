@@ -4,7 +4,7 @@ import smart.authentication.UserToken;
 import smart.cache.ArticleCache;
 import smart.cache.CategoryCache;
 import smart.cache.SystemCache;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.session.Session;
 import org.springframework.web.servlet.HandlerInterceptor;
 

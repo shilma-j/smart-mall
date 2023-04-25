@@ -5,8 +5,8 @@ import smart.cache.ArticleCache;
 import smart.config.AppConfig;
 import smart.entity.ArticleCategoryEntity;
 import smart.lib.AdminHelper;
-import smart.lib.Db;
-import smart.lib.Helper;
+import smart.util.DbUtils;
+import smart.util.Helper;
 import smart.lib.JsonResult;
 import smart.repository.ArticleCategoryRepository;
 import org.springframework.http.MediaType;
@@ -50,7 +50,7 @@ public class Category {
         }
         articleCategoryRepository.delete(articleCategoryEntity);
         articleCategoryRepository.flush();
-        Db.commit();
+        DbUtils.commit();
         ArticleCache.init();
         jsonResult.setMsg("已删除文章分类: " + articleCategoryEntity.getName());
         jsonResult.setUrl("list");
@@ -70,7 +70,7 @@ public class Category {
             modelAndView.addObject("title", "修改文章分类");
         } else {
             articleCategoryEntity = new ArticleCategoryEntity();
-            articleCategoryEntity.setRecommend(100);
+            articleCategoryEntity.setRecommend(100L);
             modelAndView.addObject("title", "新建文章分类");
         }
         modelAndView.addObject("item", articleCategoryEntity);
@@ -107,7 +107,7 @@ public class Category {
         articleCategoryEntity.setRecommend(Helper.longValue(request.getParameter("recommend")));
         articleCategoryRepository.save(articleCategoryEntity);
         articleCategoryRepository.flush();
-        Db.commit();
+        DbUtils.commit();
         ArticleCache.init();
         jsonResult.setUrl("list");
         return AdminHelper.msgPage(jsonResult, request);

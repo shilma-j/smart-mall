@@ -3,7 +3,7 @@ package smart.authentication;
 import jakarta.annotation.Resource;
 import smart.config.AdminAuthority;
 import smart.config.AdminMenu;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.repository.AdminUserRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

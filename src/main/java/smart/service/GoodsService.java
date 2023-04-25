@@ -3,7 +3,7 @@ package smart.service;
 import org.springframework.stereotype.Service;
 import smart.cache.CategoryCache;
 import smart.entity.CategoryEntity;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Pagination;
 import smart.repository.GoodsRepository;
 

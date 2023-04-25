@@ -1,12 +1,11 @@
-package smart.lib.utils;
+package smart.util;
 
 import jakarta.servlet.http.HttpServletRequest;
-import smart.lib.Helper;
 
 /**
  * request utils tools
  */
-public class RequestUtil {
+public class RequestUtils {
     public static long getLong(HttpServletRequest request, String name) {
         return getLong(request, name, 0);
     }

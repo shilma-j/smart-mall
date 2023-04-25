@@ -19,6 +19,8 @@ import smart.lib.*;
 import smart.lib.status.GoodsStatus;
 import smart.repository.GoodsRepository;
 import smart.repository.GoodsSpecRepository;
+import smart.util.Helper;
+import smart.util.Validate;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -115,6 +117,8 @@ public class Goods {
             modelAndView.addObject("title", "编辑商品");
         } else {
             goodsEntity = new GoodsEntity();
+            goodsEntity.setId(0L);
+            goodsEntity.setRecommend(1000L);
             goodsEntity.setSpec("[]");
             onSell = shipping = 2;
             goodsEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -245,7 +249,7 @@ public class Goods {
                 }
                 goodsEntity.setStock(goodsEntity.getStock() - oldStock + stock);
                 if (goodsEntity.getStock() < 0) {
-                    goodsEntity.setStock(0);
+                    goodsEntity.setStock(0L);
                 }
             } else {
                 goodsEntity.setStock(stock);
@@ -327,7 +331,7 @@ public class Goods {
                 if (id > 0 && !newSpec) {
                     goodsSpecEntity.setId(specId);
                 }
-                goodsSpecEntity.setIdx(i);
+                goodsSpecEntity.setIdx((long)i);
                 goodsSpecEntity.setPrice(price1);
                 if (newSpec) {
                     goodsSpecEntity.setStock(stock1);
@@ -340,8 +344,8 @@ public class Goods {
                 goodsSpecEntities[i] = goodsSpecEntity;
             }
             goodsEntity.setPrice(minPrice);
-            goodsEntity.setStock(0);
-            goodsEntity.setWeight(0);
+            goodsEntity.setStock(0L);
+            goodsEntity.setWeight(0L);
         }
         if (id == 0 && !newSpec) {
             jsonResult.setMsg("新建商品时不能修改规格: specId不得大于0");
@@ -354,13 +358,13 @@ public class Goods {
                 return jsonResult.toString();
             }
             for (int i = 0; i < itemsDesc.size(); i++) {
-                if (goodsSpecEntities[i].getId() != specList.get(i).getId()) {
+                if (!Objects.equals(goodsSpecEntities[i].getId(), specList.get(i).getId())) {
                     jsonResult.setMsg("规格数据错误");
                     return jsonResult.toString();
                 }
                 goodsSpecEntities[i].setStock(specList.get(i).getStock() + goodsSpecEntities[i].getStock());
                 if (goodsSpecEntities[i].getStock() < 0) {
-                    goodsSpecEntities[i].setStock(0);
+                    goodsSpecEntities[i].setStock(0L);
                 }
             }
         }

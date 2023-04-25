@@ -1,7 +1,7 @@
 package smart.config;
 
 import smart.authentication.UserToken;
-import smart.lib.Helper;
+import smart.util.Helper;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

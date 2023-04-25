@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import smart.config.AdminAuthority;
 import smart.entity.AdminRoleEntity;
-import smart.lib.*;
+import smart.entity.AdminUserEntity;
+import smart.lib.AdminHelper;
+import smart.lib.JsonResult;
+import smart.lib.Pagination;
 import smart.repository.AdminRoleRepository;
+import smart.util.DbUtils;
+import smart.util.Helper;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -38,7 +43,7 @@ public class AdminRole {
         long id = Helper.longValue(request.getParameter("id"));
         AdminRoleEntity adminRoleEntity = adminRoleRepository.findById(id).orElse(null);
         if (adminRoleEntity != null) {
-            if (Db.count("t_admin_user", Map.of("role_id", id)) > 0) {
+            if (DbUtils.count(AdminUserEntity.class, Map.of("role_id", id)) > 0) {
                 jsonResult.setMsg("该角色正在被使用中,删除失败");
                 return jsonResult.toString();
             }

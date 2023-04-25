@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import smart.cache.ArticleCache;
 import smart.cache.SystemCache;
-import smart.lib.Helper;
+import smart.util.Helper;
 
 @Controller
 @RequestMapping(path = "article")

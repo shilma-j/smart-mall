@@ -1,8 +1,8 @@
 package smart.controller.admin;
 
 import smart.config.AppConfig;
-import smart.lib.Security;
-import smart.lib.Helper;
+import smart.util.Security;
+import smart.util.Helper;
 import smart.lib.JsonResult;
 import smart.lib.session.Session;
 import smart.storage.Storage;

@@ -3,7 +3,7 @@ package smart.controller.admin.other;
 import smart.cache.SystemCache;
 import smart.config.AppConfig;
 import smart.lib.AdminHelper;
-import smart.lib.Helper;
+import smart.util.Helper;
 import smart.lib.Json;
 import smart.lib.JsonResult;
 import org.springframework.http.MediaType;

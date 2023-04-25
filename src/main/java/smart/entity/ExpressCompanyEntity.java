@@ -12,16 +12,16 @@ import jakarta.persistence.*;
 public class ExpressCompanyEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long id;
+    private Long id;
     private String name;
     private String url;
-    private long recommend;
+    private Long recommend;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -33,11 +33,11 @@ public class ExpressCompanyEntity extends BaseEntity {
         this.name = name;
     }
 
-    public long getRecommend() {
+    public Long getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(long recommend) {
+    public void setRecommend(Long recommend) {
         this.recommend = recommend;
     }
 

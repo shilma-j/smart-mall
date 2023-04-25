@@ -1,5 +1,7 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -7,19 +9,21 @@ import smart.cache.ExpressCache;
 import smart.cache.PaymentCache;
 import smart.config.AppConfig;
 import smart.entity.*;
-import smart.lib.*;
+import smart.lib.Cart;
+import smart.lib.Pagination;
 import smart.lib.payment.Payment;
 import smart.lib.status.GoodsStatus;
 import smart.lib.status.OrderGoodsStatus;
 import smart.lib.status.OrderStatus;
 import smart.repository.*;
+import smart.util.Helper;
+import smart.util.Validate;
 
-import jakarta.annotation.Resource;
-import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 
 @Service
+@Transactional
 public class OrderService {
 
     @Resource
@@ -30,6 +34,9 @@ public class OrderService {
 
     @Resource
     OrderRepository orderRepository;
+
+    @Resource
+    OrderGoodsRepository orderGoodsRepository;
 
     @Resource
     OrderGoodsService orderGoodsService;
@@ -63,7 +70,6 @@ public class OrderService {
      * @param source      订单来源 1电脑网页,2移动端网页,3微信公众号,4微信小程序
      * @return 订单信息
      */
-    @Transactional
     public OrderInfo addOrder(long addressId,
                               String payName,
                               Cart cart,
@@ -185,9 +191,9 @@ public class OrderService {
             orderGoodsEntity.setPrice(item.getGoodsPrice());
             orderGoodsEntity.setWeight(item.getGoodsWeight());
             orderGoodsEntity.setImg(item.getGoodsImg());
-            Db.insert(orderGoodsEntity);
+            orderGoodsRepository.save(orderGoodsEntity);
         });
-        Db.insert(orderEntity);
+        orderRepository.saveAndFlush(orderEntity);
         cart.del(cartItems);
         orderInfo.setOrderNo(orderEntity.getNo()).setAmount(orderEntity.getAmount());
         return orderInfo;
@@ -199,7 +205,6 @@ public class OrderService {
      * @param orderNo order no
      * @return null(成功) or 错误信息
      */
-    @Transactional
     public String cancelOrder(long orderNo) {
         if (AppConfig.getJdbcTemplate().
                 update("update t_order set status=4 where no = ? and status = 0 and pay_time is null", orderNo) == 0) {
@@ -218,7 +223,6 @@ public class OrderService {
      * @param orderNo order no
      * @return null(成功) or 错误信息
      */
-    @Transactional
     public String cancelOrder(long userId, long orderNo) {
         if (AppConfig.getJdbcTemplate().
                 update("update t_order set status=4 where no = ? and user_id = ? and status = 0 and pay_time is null", orderNo, userId) == 0) {
@@ -235,7 +239,6 @@ public class OrderService {
      * @param orderNo order no
      * @return null(成功) or 错误信息
      */
-    @Transactional
     public String confirmOrder(long orderNo) {
         if (AppConfig.getJdbcTemplate().
                 update("update t_order set status=3, confirm_time=NOW() where no = ? and status = 2", orderNo) == 0) {
@@ -252,7 +255,6 @@ public class OrderService {
      * @param orderNo order no
      * @return null(成功) or 错误信息
      */
-    @Transactional
     public String confirmOrder(long userId, long orderNo) {
         if (AppConfig.getJdbcTemplate().
                 update("update t_order set status=3, confirm_time=NOW() where no = ? and user_id = ? and status = 2", orderNo, userId) == 0) {
@@ -310,7 +312,6 @@ public class OrderService {
      * @param payNo     支付流水号
      * @return null 成功，或返回错误信息
      */
-    @Transactional
     public String pay(long orderNo, String payName, long payAmount, String payNo) {
         if (payName == null) {
             return "支付方式不得为空";
@@ -333,7 +334,6 @@ public class OrderService {
      * @param orderNo 订单号
      * @return null 成功，或返回错误信息
      */
-    @Transactional
     public String ship(long orderNo, long expressId, String expressNo) {
         OrderEntity orderEntity = orderRepository.findByNoForUpdate(orderNo);
         if (orderEntity == null) {
@@ -361,7 +361,6 @@ public class OrderService {
      * @param orderNo order no
      * @return null(成功) or 错误信息
      */
-    @Transactional
     public String refundOrder(long orderNo) {
         OrderEntity orderEntity = orderRepository.findByNoForUpdate(orderNo);
         if (orderEntity == null) {
