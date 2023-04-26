@@ -8,13 +8,16 @@
     <link rel="dns-prefetch" href="//www.g686.net">
     <link rel="dns-prefetch" href="//0-00.oss-cn-beijing.aliyuncs.com">
     <link rel="shortcut icon" href="https://0-00.oss-cn-beijing.aliyuncs.com/static/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://0-00.oss-cn-beijing.aliyuncs.com/static/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://0-00.oss-cn-beijing.aliyuncs.com/static/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://0-00.oss-cn-beijing.aliyuncs.com/static/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="https://0-00.oss-cn-beijing.aliyuncs.com/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="https://0-00.oss-cn-beijing.aliyuncs.com/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="https://0-00.oss-cn-beijing.aliyuncs.com/static/favicon-16x16.png">
     <title>smart mall</title>
     <style>
         a {
-            color: blue;
+            color: #006eff;
         }
 
         body {
@@ -23,9 +26,8 @@
             width: 100%;
             color: #333;
             display: table;
-            font-weight: 100;
-            font-family: 'Lato', sans-serif;
-            font-size: 18px;
+            font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", 微软雅黑, sans-serif;
+            font-size: 16px;
         }
 
         .container {
@@ -40,9 +42,25 @@
             text-align: left;
         }
 
+        .h1 {
+            border-bottom: #888888 dashed 2px;
+            color: #222;
+            display: flex;
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        .h2 {
+            color: #222;
+            display: flex;
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+
+
         table {
             border-spacing: 0;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
         }
 
         td, th {
@@ -58,16 +76,19 @@
 <body>
 <div class="container">
     <div class="content">
-        <h1><img alt="favicon" src="https://smart-mall.g686.net/favicon-32x32.png">SmartMall商城系统</h1>
-        <hr>
-        <h4>项目介绍</h4>
-        <p style="text-indent: 2rem">SmartMall商城系统基于SpringBoot构建，程序包含大量测试用例确保每次调整发布时均能保持稳健；
+        <div class="h1">
+            <div style="margin-right: 0.5rem"><img alt="favicon" src="https://smart-mall.g686.net/favicon-32x32.png">
+            </div>
+            <div>SmartMall商城系统</div>
+        </div>
+        <div class="h2">项目介绍</div>
+        <p style="margin: 0 0 0.8rem;text-indent: 2rem">SmartMall商城系统基于SpringBoot构建，程序包含大量测试用例确保每次调整发布时均能保持稳健；
             在确保软件质量的同时对速度追求极致，客户端流畅度及压力测试数据在同类软件中表现优秀。
             无论开箱即用还是二次开发，SmartMall商城系统都将是您在企业级商城系统中的优秀选择。</p>
-        <h4>项目演示</h4>
-        浏览器端:<a href="https://smart-mall.g686.net">https://smart-mall.g686.net</a><br>
-        微信小程序:开发中
-        <h4>后端技术栈</h4>
+        <div class="h2">项目演示</div>
+        浏览器端:&nbsp;<a href="https://smart-mall.g686.net" target="_blank">https://smart-mall.g686.net</a><br>
+        微信小程序:&nbsp;开发中
+        <div class="h2">后端技术栈</div>
         <table>
             <tr>
                 <th>名称</th>
@@ -86,9 +107,37 @@
                 <td>8.0</td>
             </tr>
         </table>
-        <h4>压力测试</h4>
-        待发布<br>
-        <h4>客户端支持列表</h4>
+        <div class="h2">压力测试</div>
+        <table>
+            <tr>
+                <th>页面/功能</th>
+                <th>QPS/TPS</th>
+                <th>时间(最小/最大/平均)</th>
+                <th>错误</th>
+            </tr>
+            <tr>
+                <td>首页</td>
+                <td>1263</td>
+                <td>2ms / 6ms / 3.169ms</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>商品列表</td>
+                <td>1058</td>
+                <td>3ms / 7ms / 3.784ms</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>生成订单</td>
+                <td colspan="3">等待测试</td>
+            </tr>
+        </table>
+        <p>
+            服务器 压测客户端均在同一机器运行<br>
+            机器配置: DELL Inspiron 5559 &nbsp;( Intel Core i5-6200U / 8GB RAM / TOSHIBA Q200 EX 240GB)<br>
+            软件环境： Rocky Linux 9.1 / openjdk 17 / mysql 8.0 / redis 7.0
+        </p>
+        <div class="h2">客户端支持列表</div>
         <table>
             <tr>
                 <th>系统</th>
@@ -121,8 +170,8 @@
                 <td>开发中</td>
             </tr>
         </table>
-        <h4>项目地址</h4>
-        <a href="https://github.com/swq8/smart-mall">https://github.com/swq8/smart-mall</a>
+        <div class="h2">项目地址</div>
+        <a href="https://github.com/swq8/smart-mall" target="_blank">https://github.com/swq8/smart-mall</a>
         <br><br>
         <br>
         <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20028340号-1</a>
