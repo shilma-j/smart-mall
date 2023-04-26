@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="__${theme}__/components::head(link=~{::link},style=~{::style},script=~{::head/script})">
+<head th:replace="~{__${theme}__/components::head(link=~{::link},style=~{::style},script=~{::head/script})}">
     <title th:text="${siteName}"></title>
     <link rel="stylesheet" th:href="${#helpers.retouch('/splide/css/themes/splide-default.min.css')}">
     <style>
@@ -60,7 +60,7 @@
     <script th:src="${#helpers.retouch('/splide/js/splide.min.js')}"></script>
 </head>
 <body>
-<header th:replace="__${theme}__/components::header(title=${siteName})">
+<header th:replace="~{__${theme}__/components::header(title=${siteName})}">
 </header>
 <div class="container">
     <div id="image-slider" class="splide">

@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
             content = Json.encode(map);
         } else {
             httpHeaders.setContentType(MediaType.TEXT_HTML);
-            content = Helper.getErrorHtml(httpStatus);
+            content = Helper.getErrorHtml(httpStatus, Helper.getThemeName(request));
         }
         return new ResponseEntity<>(
                 content,

@@ -1,14 +1,16 @@
 package smart.service;
 
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import smart.cache.CategoryCache;
 import smart.entity.CategoryEntity;
-import smart.util.Helper;
 import smart.lib.Pagination;
 import smart.repository.GoodsRepository;
+import smart.util.Helper;
 
-import jakarta.annotation.Resource;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class GoodsService {
@@ -20,7 +22,8 @@ public class GoodsService {
      *
      * @param categoryId category id
      * @param keyword    keyword
-     * @param sort       sort
+     * @param sort       sort  排序：[null, "n", "p1", "p2"],
+     *                   means [default, price asc, price desc]
      * @param page       page
      */
     public Pagination getGoodsList(long categoryId, String keyword, String sort, long page) {
@@ -37,7 +40,7 @@ public class GoodsService {
             categoryId = 0;
         }
 
-        if (keyword.length() > 0) {
+        if (StringUtils.hasLength(keyword)) {
             keyword = Helper.stringRemove(keyword, "'", "\"", "?", "%", "_", "[", "]").trim();
             StringBuilder qSql = new StringBuilder("'%");
             for (var key : keyword.split(" ")) {

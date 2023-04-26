@@ -1,19 +1,20 @@
 package smart.util;
 
-import smart.cache.SystemCache;
-import smart.config.AppConfig;
-import smart.lib.JsonResult;
-import smart.lib.session.Session;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import smart.cache.SystemCache;
+import smart.config.AppConfig;
+import smart.lib.JsonResult;
+import smart.lib.session.Session;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,11 +42,7 @@ public final class Helper {
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     // 移动端判别条件
-    private final static String[] MOBILE_AGENTS = {
-            " (iPhone; CPU ",
-            " (iPad; CPU ",
-            " Android "
-    };
+    private final static String[] MOBILE_USER_AGENT_KEY_WORDS = {" (iPhone; CPU ", " (iPad; CPU ", " Android "};
 
     public static BigDecimal bigDecimalValue(String str) {
         try {
@@ -96,15 +93,11 @@ public final class Helper {
      */
     public static String dateFormat(LocalDateTime localDateTime) {
 
-        return localDateTime == null
-                ? null
-                : dateTimeFormatter.format(localDateTime);
+        return localDateTime == null ? null : dateTimeFormatter.format(localDateTime);
     }
 
     public static String dateFormat(LocalDateTime localDateTime, String pattern) {
-        return localDateTime == null || pattern == null
-                ? null
-                : DateTimeFormatter.ofPattern(pattern).format(localDateTime);
+        return localDateTime == null || pattern == null ? null : DateTimeFormatter.ofPattern(pattern).format(localDateTime);
     }
 
     /**
@@ -115,16 +108,12 @@ public final class Helper {
      */
     public static String dateFormat(Date date) {
 
-        return date == null
-                ? null
-                : simpleDateFormat.format(date);
+        return date == null ? null : simpleDateFormat.format(date);
     }
 
     public static String dateFormat(Date date, String pattern) {
 
-        return date == null || pattern == null
-                ? null
-                : new SimpleDateFormat(pattern).format(date);
+        return date == null || pattern == null ? null : new SimpleDateFormat(pattern).format(date);
     }
 
     /**
@@ -152,11 +141,11 @@ public final class Helper {
      * @param status http status
      * @return error page html
      */
-    public static String getErrorHtml(HttpStatus status) {
+    public static String getErrorHtml(HttpStatus status, String themeName) {
         TemplateEngine templateEngine = AppConfig.getContext().getBean(TemplateEngine.class);
         Context context = new Context();
         context.setVariable("msg", status.value() + " " + status.name());
-        return templateEngine.process("default/error", context);
+        return templateEngine.process(themeName + "/error", context);
     }
 
 
@@ -187,7 +176,7 @@ public final class Helper {
      * @param request http request
      * @return relatively theme name
      */
-    public static String getTheme(HttpServletRequest request) {
+    public static String getThemeName(HttpServletRequest request) {
         return isMobileRequest(request) ? SystemCache.getThemeMobile() : SystemCache.getThemePc();
     }
 
@@ -234,10 +223,9 @@ public final class Helper {
      */
     public static boolean isMobileRequest(HttpServletRequest request) {
         String userAgent = request.getHeader("user-agent");
-
-        if (userAgent != null) {
-            for (String s : MOBILE_AGENTS) {
-                if (userAgent.contains(s)) {
+        if (StringUtils.hasLength(userAgent)) {
+            for (var keyWord: MOBILE_USER_AGENT_KEY_WORDS) {
+                if (userAgent.contains(keyWord)) {
                     return true;
                 }
             }
@@ -345,7 +333,7 @@ public final class Helper {
             modelAndView = new ModelAndView(viewName);
             modelAndView.addObject("theme", "admin");
         } else {
-            String theme = getTheme(request);
+            String theme = getThemeName(request);
             modelAndView = new ModelAndView(theme + '/' + viewName);
             modelAndView.addObject("theme", theme);
         }
