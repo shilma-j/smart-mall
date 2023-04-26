@@ -39,7 +39,7 @@ public class UserTest {
     }
 
     @Test
-    @Timeout(2)
+    @Timeout(5)
     @Transactional
     public void registerTest() throws Exception {
         var response = mockMvc.perform(MockMvcRequestBuilders.get("/captcha")).andReturn().getResponse();

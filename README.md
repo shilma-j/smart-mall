@@ -27,8 +27,8 @@
 |商品列表|1058|3ms / 7ms / 3.784ms|0|
 |生成订单|	等待测试|||
 ```text
-硬件: DELL Inspiron 5559  ( Intel Core i5-6200U / 8GB RAM / TOSHIBA Q200 EX 240GB)
-软件: Rocky Linux 9.1 / openjdk 17 / mysql 8.0 / redis 7.0
+机器配置: DELL Inspiron 5559 ( Intel Core i5-6200U / 8GB RAM / TOSHIBA Q200 EX 240GB)
+软件环境: Rocky Linux 9.1 / OpenJDK 17 / MySql 8.0 / Redis 7.0
 ```
 
 待发布

@@ -106,8 +106,7 @@ public class UserService {
         userEntity.setRegisterTime(new Timestamp(System.currentTimeMillis()));
         userEntity.setRegisterIp(registerIp);
         try {
-            DbUtils.insert(userEntity, "name", "password", "salt",
-                    "registerTime", "registerIp");
+            DbUtils.insert(userEntity);
         } catch (DuplicateKeyException ex) {
             DbUtils.rollback();
             return "用户名已被注册";

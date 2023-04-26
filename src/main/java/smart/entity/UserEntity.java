@@ -20,7 +20,7 @@ public class UserEntity extends BaseEntity {
     private String lastLoginIp;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp lastLoginTime;
-    private int level = 0;
+    private Integer level;
     private String phone;
     private String name;
     private String password;
@@ -73,11 +73,11 @@ public class UserEntity extends BaseEntity {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 

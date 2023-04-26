@@ -53,36 +53,27 @@ public class DbUtils {
      * 获取表行数
      *
      * @param entityClass 表的实体类
-     * @param where       条件
+     * @param condition   条件
      * @return 符合条件的行数
      */
-    public static long count(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("SELECT COUNT(*) FROM `%s`", getTableName(entityClass)));
-        if (CollectionUtils.isEmpty(where)) {
-            return Helper.longValue(jdbc.queryForObject(sql.toString(), Long.class));
-        }
-        sql.append(" WHERE");
-        for (String key : where.keySet()) {
-            sql.append(String.format(" `%s`=? AND", key));
-        }
-        sql.delete(sql.length() - 4, sql.length());
-        return Helper.longValue(jdbc.queryForObject(sql.toString(), Long.class, where.values().toArray()));
+    public static long count(Class<? extends BaseEntity> entityClass, Map<String, Object> condition) {
+        var conditionObject = getConditionObject(condition);
+        String sql = "SELECT COUNT(*) FROM `" + getTableName(entityClass) + "`" + conditionObject.sql;
+        return Helper.longValue(jdbc.queryForObject(sql, Long.class, conditionObject.params().toArray()));
     }
 
     /**
      * 删除符合条件的行
      *
      * @param entityClass 表的实体类
-     * @param where       条件
+     * @param condition   条件
      * @return 删除的行数
      */
-    public static long delete(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("DELETE FROM `%s` WHERE", getTableName(entityClass)));
-        for (String key : where.keySet()) {
-            sql.append(String.format(" `%s`=? AND", key));
-        }
-        sql.delete(sql.length() - 4, sql.length());
-        return jdbc.update(sql.toString(), where.values().toArray());
+    public static long delete(Class<? extends BaseEntity> entityClass, Map<String, Object> condition) {
+
+        var conditionObject = getConditionObject(condition);
+        String sql = "DELETE FROM `" + getTableName(entityClass) + "`" + conditionObject.sql();
+        return jdbc.update(sql, conditionObject.params.toArray());
     }
 
 
@@ -90,23 +81,14 @@ public class DbUtils {
      * 获取符合条件的第一行
      *
      * @param entityClass 表的实体类
-     * @param where       条件
+     * @param condition   条件
      * @return row  数据行，没有返回null
      */
-    public static Map<String, Object> first(Class<? extends BaseEntity> entityClass, Map<String, Object> where) {
-        StringBuilder sql = new StringBuilder(String.format("SELECT * FROM `%s`", getTableName(entityClass)));
-        if (where == null || where.size() == 0) {
-            sql.append(" LIMIT 1");
-            return jdbc.queryForMap(sql.toString());
-        }
-        sql.append(" WHERE");
-        for (String key : where.keySet()) {
-            sql.append(String.format(" `%s`=? AND", key));
-        }
-        sql.delete(sql.length() - 4, sql.length());
-        sql.append(" LIMIT 1");
+    public static Map<String, Object> first(Class<? extends BaseEntity> entityClass, Map<String, Object> condition) {
+        var conditionObject = getConditionObject(condition);
+        String sql = "SELECT * FROM `" + getTableName(entityClass) + "`" + conditionObject.sql + " LIMIT 1";
         try {
-            return jdbc.queryForMap(sql.toString(), where.values().toArray());
+            return jdbc.queryForMap(sql, conditionObject.params.toArray());
         } catch (EmptyResultDataAccessException ignored) {
             return null;
         }
@@ -173,12 +155,13 @@ public class DbUtils {
     }
 
     /**
-     * 插入行数据
+     * insert row
      *
      * @param entityClass entity class
-     * @param row         待插入的行
+     * @param row         the row to insert, field will be remove if value is null
      */
     private static void insert(Class<? extends BaseEntity> entityClass, Map<String, Object> row) {
+        row.values().removeIf(Objects::isNull);
         if (row.size() == 0) {
             return;
         }
@@ -242,35 +225,18 @@ public class DbUtils {
     }
 
     /**
-     * insert row
+     * insert entity
      *
-     * @param entity record
+     * @param entity the entity to insert, property will be ignored if value is null
      */
     public static void insert(BaseEntity entity) {
-        insert(entity.getClass(), entityToMap(entity));
-    }
-
-    /**
-     * insert row
-     *
-     * @param entity     record
-     * @param fieldNames insert with filed names, default all
-     */
-    public static void insert(BaseEntity entity, String... fieldNames) {
-        Set<String> names = new HashSet<>();
-        Collections.addAll(names, fieldNames);
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
         Map<String, Object> row = new LinkedHashMap<>();
-
         fieldInfos.forEach((name, field) -> {
-            if (field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || names.contains(name))) {
+            if (field.getAnnotation(Transient.class) == null && field.getValue() != null) {
                 row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
             }
-            names.remove(name);
         });
-        if (names.size() > 0) {
-            throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
-        }
         insert(entity.getClass(), row);
     }
 
@@ -306,11 +272,14 @@ public class DbUtils {
     /**
      * 更新行数据
      *
-     * @param entityClass 表的实体类
-     * @param where       条件
-     * @param row         待更新的列
+     * @param entityClass  表的实体类
+     * @param conditionMap 条件
+     * @param row          the map to update, field will be remove if value is null
+     * @return int
      */
-    public static int update(Class<? extends BaseEntity> entityClass, Map<String, Object> where, Map<String, Object> row) {
+    public static int update(Class<? extends BaseEntity> entityClass, Map<String, Object> conditionMap, Map<String, Object> row) {
+        row.values().removeIf(Objects::isNull);
+        ConditionObject conditionObject = getConditionObject(conditionMap);
         StringBuilder sql = new StringBuilder(String.format("UPDATE `%s` SET", getTableName(entityClass)));
         List<Object> params = new LinkedList<>();
         for (String key : row.keySet()) {
@@ -319,45 +288,43 @@ public class DbUtils {
                 params.add(row.get(key));
             }
         }
-        sql.deleteCharAt(sql.length() - 1).append(" WHERE");
-        for (String key : where.keySet()) {
-            sql.append(String.format(" `%s`=? AND", key));
-            params.add(where.get(key));
-        }
-        sql.delete(sql.length() - 4, sql.length());
+        sql.deleteCharAt(sql.length() - 1);
+        sql.append(conditionObject.sql());
+        params.addAll(conditionObject.params);
         return jdbc.update(sql.toString(), params.toArray());
     }
 
     /**
      * update entity by primary key
      *
-     * @param entity     row
+     * @param entity     the entity to update, property will be ignored if value is null
      * @param fieldNames update with filed names, default all
      * @return rows num
      */
     public static int update(BaseEntity entity, String... fieldNames) {
         AtomicReference<FiledInfo> idFiledInfo = new AtomicReference<>();
-        Set<String> names = new HashSet<>();
-        Collections.addAll(names, fieldNames);
+        Set<String> unusedNames = new HashSet<>();
+        Collections.addAll(unusedNames, fieldNames);
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
         Map<String, Object> row = new LinkedHashMap<>();
         fieldInfos.forEach((name, field) -> {
+            // find primary key
             if (field.getAnnotation(Id.class) != null) {
                 if (idFiledInfo.get() != null) {
-                    throw new IllegalArgumentException("duplicate primary key");
+                    throw new IllegalArgumentException("duplicate primary key: " + name);
                 }
                 idFiledInfo.set(field);
-            } else if (field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || names.contains(name))) {
+            } else if (field.getValue() != null && field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || unusedNames.contains(name))) {
                 row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
             }
-            names.remove(name);
+            unusedNames.remove(name);
         });
         FiledInfo primaryKey = idFiledInfo.get();
         if (primaryKey == null) {
             throw new IllegalArgumentException("missing primary key");
         }
-        if (names.size() > 0) {
-            throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
+        if (unusedNames.size() > 0) {
+            throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(unusedNames.toArray()));
         }
         return update(entity.getClass(), Map.of(primaryKey.getName(), primaryKey.getValue()), row);
     }
@@ -374,8 +341,35 @@ public class DbUtils {
         return sql.toString();
     }
 
+    private static ConditionObject getConditionObject(Map<String, Object> condition) {
+        //Prevent mistakes
+        if (CollectionUtils.isEmpty(condition)) {
+            throw new IllegalArgumentException("condition must not be empty");
+        }
+        StringBuilder sql = new StringBuilder();
+        Set<Object> params = new HashSet<>();
+        sql.append(" WHERE");
+        condition.forEach((k, v) -> {
+            sql.append(" `").append(k).append("`");
+            if (v == null) {
+                sql.append(" IS NULL");
+            } else {
+                sql.append("=?");
+                params.add(v);
+            }
+            sql.append(" AND");
+        });
+        sql.delete(sql.length() - 4, sql.length());
+        return new ConditionObject(sql.toString(), params);
+
+    }
+
     @Autowired
     public void setJdbc(JdbcTemplate jdbc) {
         DbUtils.jdbc = jdbc;
     }
+
+    record ConditionObject(String sql, Collection<Object> params) {
+    }
+
 }
