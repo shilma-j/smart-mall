@@ -1,6 +1,7 @@
 package smart.util;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -118,110 +119,34 @@ public class DbUtils {
         return Helper.longValue(jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class));
     }
 
-
-    /***
-     * entity to map
-     * @param entity  entity
-     * @param fieldNames field names
-     * @return Map<String, Object>
-     */
-    public static Map<String, Object> entityToMap(BaseEntity entity, String... fieldNames) {
-        Set<String> names = new HashSet<>();
-        Collections.addAll(names, fieldNames);
-        Map<String, Object> row = new HashMap<>();
-        Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
-        if (fieldNames.length == 0) {
-            fieldInfos.forEach((name, field) -> {
-                var generated = field.getAnnotation(GeneratedValue.class);
-                if (generated != null && generated.strategy() == GenerationType.IDENTITY) {
-                    return;
-                }
-                if (field.getAnnotation(Transient.class) == null) {
-                    row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
-                }
-            });
-        } else {
-            fieldInfos.forEach((name, field) -> {
-                if (field.getAnnotation(Transient.class) == null && names.contains(name)) {
-                    row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
-                }
-                names.remove(name);
-            });
-            if (names.size() > 0) {
-                throw new IllegalArgumentException("illegal filed name: " + Arrays.toString(names.toArray()));
-            }
-        }
-        return row;
-    }
-
-    /**
-     * insert row
-     *
-     * @param entityClass entity class
-     * @param row         the row to insert, field will be remove if value is null
-     */
-    private static void insert(Class<? extends BaseEntity> entityClass, Map<String, Object> row) {
-        row.values().removeIf(Objects::isNull);
-        if (row.size() == 0) {
-            return;
-        }
-        var colNames = row.keySet().toArray(String[]::new);
-        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entityClass), colNames)).append("(").append("?,".repeat(row.size()));
-        sql.deleteCharAt(sql.length() - 1).append(")");
-        jdbc.update(sql.toString(), row.values().toArray());
-    }
-
     /**
      * batch insert
      *
-     * @param entityClass 表实体类
-     * @param maps        待插入的行
+     * @param entities the entities to insert, field will be ignored if value is null in first entity
      */
-    public static void insertAll(Class<? extends BaseEntity> entityClass, Collection<Map<String, Object>> maps) {
-        var iterator = maps.iterator();
-        if (!iterator.hasNext()) {
-            return;
-        }
-        var row = iterator.next();
-        Stack<Object> params = new Stack<>();
-        var colNames = row.keySet().toArray(String[]::new);
-        if (colNames.length == 0) {
-            return;
-        }
-        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entityClass), colNames));
-        do {
-            sql.append("(");
-            for (var colName : colNames) {
-                sql.append("?,");
-                params.push(row.get(colName));
-            }
-            sql.deleteCharAt(sql.length() - 1).append("),");
-            row = iterator.hasNext() ? iterator.next() : null;
-        } while (row != null);
-        sql.deleteCharAt(sql.length() - 1);
-        var arr = params.toArray();
-        jdbc.update(sql.toString(), arr);
-    }
-
-    /**
-     * batch insert
-     *
-     * @param entities   待插入的行
-     * @param fieldNames 仅插入指定的字段，为空全部插入
-     */
-    public static void insertAll(Collection<? extends BaseEntity> entities, String... fieldNames) {
+    public static void insertAll(List<? extends BaseEntity> entities) {
         if (CollectionUtils.isEmpty(entities)) {
             return;
         }
-        Collection<Map<String, Object>> rows = new Stack<>();
-        Iterator<? extends BaseEntity> iterator = entities.iterator();
-        var entity = iterator.next();
-        var entityClass = entity.getClass();
-        do {
-            rows.add(entityToMap(entity, fieldNames));
-            entity = iterator.hasNext() ? iterator.next() : null;
-        } while (entity != null);
-        insertAll(entityClass, rows);
+        final List<String> fieldNames = new LinkedList<>();
+        final List<Object> params = new LinkedList<>();
+        entities.get(0).getFieldInfos().forEach((k, v) -> {
+            if (v.getValue() != null) fieldNames.add(k);
+        });
+        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entities.get(0).getClass()), fieldNames.stream().map(DbUtils::camelCaseToUnderscoresNaming).toArray(String[]::new)));
+        for (var entity : entities) {
+            sql.append("(");
+            Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
+            for (String fieldName : fieldNames) {
+                var val = fieldInfos.get(fieldName).getValue();
+                if (val == null) throw new IllegalArgumentException("value not be null");
+                sql.append("?,");
+                params.add(val);
+            }
+            sql.deleteCharAt(sql.length() - 1).append("),");
+        }
+        sql.deleteCharAt(sql.length() - 1);
+        jdbc.update(sql.toString(), params.toArray());
     }
 
     /**
@@ -230,14 +155,18 @@ public class DbUtils {
      * @param entity the entity to insert, property will be ignored if value is null
      */
     public static void insert(BaseEntity entity) {
+        List<String> sqlFieldNames = new LinkedList<>();
+        List<Object> params = new LinkedList<>();
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
-        Map<String, Object> row = new LinkedHashMap<>();
         fieldInfos.forEach((name, field) -> {
             if (field.getAnnotation(Transient.class) == null && field.getValue() != null) {
-                row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());
+                sqlFieldNames.add(DbUtils.camelCaseToUnderscoresNaming(name));
+                params.add(field.getValue());
             }
         });
-        insert(entity.getClass(), row);
+        StringBuilder sql = new StringBuilder(getInsertHeader(getTableName(entity.getClass()), sqlFieldNames.toArray(String[]::new))).append("(").append("?,".repeat(sqlFieldNames.size()));
+        sql.deleteCharAt(sql.length() - 1).append(")");
+        jdbc.update(sql.toString(), params.toArray());
     }
 
     /**
@@ -308,11 +237,8 @@ public class DbUtils {
         Map<String, FiledInfo> fieldInfos = entity.getFieldInfos();
         Map<String, Object> row = new LinkedHashMap<>();
         fieldInfos.forEach((name, field) -> {
-            // find primary key
-            if (field.getAnnotation(Id.class) != null) {
-                if (idFiledInfo.get() != null) {
-                    throw new IllegalArgumentException("duplicate primary key: " + name);
-                }
+            // primary key
+            if (field.isPrimaryKey()) {
                 idFiledInfo.set(field);
             } else if (field.getValue() != null && field.getAnnotation(Transient.class) == null && (fieldNames.length == 0 || unusedNames.contains(name))) {
                 row.put(DbUtils.camelCaseToUnderscoresNaming(name), field.getValue());

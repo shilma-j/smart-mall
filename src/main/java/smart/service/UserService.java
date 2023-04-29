@@ -22,6 +22,7 @@ import java.util.Map;
 @Service
 public class UserService {
 
+    // user salt length
     public static final int SALT_LENGTH = 10;
 
     @Resource

@@ -1,5 +1,7 @@
 package smart.entity;
 
+import jakarta.persistence.Id;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,6 +40,7 @@ public abstract class BaseEntity {
                 continue;
             }
             filedInfo.setAnnotations(field.getAnnotations());
+            filedInfo.setPrimaryKey(field.getAnnotation(Id.class) != null);
             filedInfos.put(filedInfo.getName(), filedInfo);
         }
 

@@ -14,7 +14,7 @@ public class UserLogEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    private Long uid;
+    private Long userId;
     private int type;
     private String msg;
     private String ip;
@@ -60,11 +60,11 @@ public class UserLogEntity extends BaseEntity {
         this.type = type;
     }
 
-    public Long getUid() {
-        return uid;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

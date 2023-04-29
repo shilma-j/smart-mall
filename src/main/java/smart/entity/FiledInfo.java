@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 public final class FiledInfo {
     private Annotation[] annotations;
     // is primary key
-    private boolean primaryKey = false;
+    private Boolean primaryKey;
     private String name;
     private Object value;
     private Class<?> type;
@@ -16,7 +16,6 @@ public final class FiledInfo {
     @SuppressWarnings("unchecked")
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         for (var annotation : annotations) {
-            var cls = annotation.annotationType();
             if (annotation.annotationType().equals(annotationClass)) {
                 return (T) annotation;
             }

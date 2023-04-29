@@ -16,6 +16,7 @@ import smart.lib.status.GoodsStatus;
 import smart.lib.status.OrderGoodsStatus;
 import smart.lib.status.OrderStatus;
 import smart.repository.*;
+import smart.util.DbUtils;
 import smart.util.Helper;
 import smart.util.Validate;
 
@@ -34,9 +35,6 @@ public class OrderService {
 
     @Resource
     OrderRepository orderRepository;
-
-    @Resource
-    OrderGoodsRepository orderGoodsRepository;
 
     @Resource
     OrderGoodsService orderGoodsService;
@@ -70,12 +68,7 @@ public class OrderService {
      * @param source      订单来源 1电脑网页,2移动端网页,3微信公众号,4微信小程序
      * @return 订单信息
      */
-    public OrderInfo addOrder(long addressId,
-                              String payName,
-                              Cart cart,
-                              long sumPrice,
-                              long shippingFee,
-                              long source) {
+    public OrderInfo addOrder(long addressId, String payName, Cart cart, long sumPrice, long shippingFee, long source) {
         OrderInfo orderInfo = new OrderInfo();
         long userId = cart.getUserToken().getId();
         UserEntity userEntity = userRepository.findByIdForWrite(userId);
@@ -119,10 +112,7 @@ public class OrderService {
 
         for (var item : cartItems) {
             GoodsEntity goodsEntity = goodsEntityMap.get(item.getGoodsId());
-            if (goodsEntity == null
-                    || (goodsEntity.getStatus() & GoodsStatus.RECYCLE_BIN) > 0
-                    || (goodsEntity.getStatus() & GoodsStatus.ON_SELL) == 0
-            ) {
+            if (goodsEntity == null || (goodsEntity.getStatus() & GoodsStatus.RECYCLE_BIN) > 0 || (goodsEntity.getStatus() & GoodsStatus.ON_SELL) == 0) {
                 return orderInfo.setErr("商品已下架");
             }
             // 库存
@@ -170,16 +160,14 @@ public class OrderService {
         }
 
 
+        // order goods entity to inser
+        List<OrderGoodsEntity> orderGoodsEntities = new LinkedList<>();
         // 扣库存，创建订单商品
         cartItems.forEach(item -> {
             if (item.getSpecId() == 0) {
-                AppConfig.getJdbcTemplate().update(
-                        "update t_goods set stock=stock - ? where id = ?",
-                        item.getNum(), item.getGoodsId());
+                AppConfig.getJdbcTemplate().update("update t_goods set stock=stock - ? where id = ?", item.getNum(), item.getGoodsId());
             } else {
-                AppConfig.getJdbcTemplate().update(
-                        "update t_goods_spec set stock=stock - ? where id = ?",
-                        item.getNum(), item.getSpecId());
+                AppConfig.getJdbcTemplate().update("update t_goods_spec set stock=stock - ? where id = ?", item.getNum(), item.getSpecId());
             }
             OrderGoodsEntity orderGoodsEntity = new OrderGoodsEntity();
             orderGoodsEntity.setOrderNo(orderEntity.getNo());
@@ -191,9 +179,10 @@ public class OrderService {
             orderGoodsEntity.setPrice(item.getGoodsPrice());
             orderGoodsEntity.setWeight(item.getGoodsWeight());
             orderGoodsEntity.setImg(item.getGoodsImg());
-            orderGoodsRepository.save(orderGoodsEntity);
+            orderGoodsEntities.add(orderGoodsEntity);
         });
-        orderRepository.saveAndFlush(orderEntity);
+        DbUtils.insertAll(orderGoodsEntities);
+        DbUtils.insert(orderEntity);
         cart.del(cartItems);
         orderInfo.setOrderNo(orderEntity.getNo()).setAmount(orderEntity.getAmount());
         return orderInfo;
@@ -206,8 +195,7 @@ public class OrderService {
      * @return null(成功) or 错误信息
      */
     public String cancelOrder(long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=4 where no = ? and status = 0 and pay_time is null", orderNo) == 0) {
+        if (AppConfig.getJdbcTemplate().update("update t_order set status=4 where no = ? and status = 0 and pay_time is null", orderNo) == 0) {
             return "订单信息错误";
         }
         // 增加库存
@@ -224,8 +212,7 @@ public class OrderService {
      * @return null(成功) or 错误信息
      */
     public String cancelOrder(long userId, long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=4 where no = ? and user_id = ? and status = 0 and pay_time is null", orderNo, userId) == 0) {
+        if (AppConfig.getJdbcTemplate().update("update t_order set status=4 where no = ? and user_id = ? and status = 0 and pay_time is null", orderNo, userId) == 0) {
             return "订单信息错误";
         }
         // 增加库存
@@ -240,8 +227,7 @@ public class OrderService {
      * @return null(成功) or 错误信息
      */
     public String confirmOrder(long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=3, confirm_time=NOW() where no = ? and status = 2", orderNo) == 0) {
+        if (AppConfig.getJdbcTemplate().update("update t_order set status=3, confirm_time=NOW() where no = ? and status = 2", orderNo) == 0) {
             return "订单信息错误";
         }
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
@@ -256,8 +242,7 @@ public class OrderService {
      * @return null(成功) or 错误信息
      */
     public String confirmOrder(long userId, long orderNo) {
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status=3, confirm_time=NOW() where no = ? and user_id = ? and status = 2", orderNo, userId) == 0) {
+        if (AppConfig.getJdbcTemplate().update("update t_order set status=3, confirm_time=NOW() where no = ? and user_id = ? and status = 2", orderNo, userId) == 0) {
             return "订单信息错误";
         }
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RECEIVED.getCode(), orderNo);
@@ -298,8 +283,7 @@ public class OrderService {
      */
     public Pagination getUserOrders(long userId, long pageSize, long page, String keyWord, boolean isDeleted, OrderStatus orderStatus) {
         String sql = "select id, no, user_id as userId,region from t_order";
-        Pagination pagination = Pagination.newBuilder(null).build();
-        return pagination;
+        return Pagination.newBuilder(null).build();
     }
 
 
@@ -323,8 +307,7 @@ public class OrderService {
         if (orderEntity.getStatus() != 0) {
             return "该订单不是待支付订单";
         }
-        AppConfig.getJdbcTemplate().update("update t_order set pay_name = ?,pay_time = ?,pay_amount = ?,pay_no =?,status = 1 where no = ?",
-                payName, new Timestamp(System.currentTimeMillis()), payAmount, payNo, orderNo);
+        AppConfig.getJdbcTemplate().update("update t_order set pay_name = ?,pay_time = ?,pay_amount = ?,pay_no =?,status = 1 where no = ?", payName, new Timestamp(System.currentTimeMillis()), payAmount, payNo, orderNo);
         return null;
     }
 
@@ -349,8 +332,7 @@ public class OrderService {
             return "订单号不得为空";
         }
         expressNo = expressNo.trim();
-        AppConfig.getJdbcTemplate().update("update t_order set express_id = ?, express_no = ?, shipping_time = ?,status = 2 where no = ?",
-                expressId, expressNo, new Timestamp(System.currentTimeMillis()), orderNo);
+        AppConfig.getJdbcTemplate().update("update t_order set express_id = ?, express_no = ?, shipping_time = ?,status = 2 where no = ?", expressId, expressNo, new Timestamp(System.currentTimeMillis()), orderNo);
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.SHIPPED.getCode(), orderNo);
         return null;
     }
@@ -377,8 +359,7 @@ public class OrderService {
             }
         }
 
-        if (AppConfig.getJdbcTemplate().
-                update("update t_order set status = 5 where no = ? and status in (1,2,3) and pay_time is not null", orderNo) == 0) {
+        if (AppConfig.getJdbcTemplate().update("update t_order set status = 5 where no = ? and status in (1,2,3) and pay_time is not null", orderNo) == 0) {
             return "订单信息错误";
         }
         AppConfig.getJdbcTemplate().update("update t_order_goods set status = ? where order_no = ?", OrderGoodsStatus.RETURNED.getCode(), orderNo);
