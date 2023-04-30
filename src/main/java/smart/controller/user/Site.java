@@ -92,7 +92,7 @@ public class Site {
 
     @PostMapping(path = "login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postLogin(HttpServletRequest request, Session session, @RequestParam(name = "back") String abc) {
+    public String postLogin(HttpServletRequest request, Session session) {
         String name = RequestUtils.getStr(request, "name", "");
         String password = RequestUtils.getStr(request, "password", "");
         String back = RequestUtils.getStr(request, "back", "");

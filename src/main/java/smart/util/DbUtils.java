@@ -187,15 +187,15 @@ public class DbUtils {
             return null;
         }
         name = name.toLowerCase();
-        StringBuilder builder = new StringBuilder(name);
-        for (int i = 2; i < builder.length(); ) {
-            if (builder.charAt(i - 1) == '_') {
-                builder.replace(i - 1, i + 1, String.valueOf(builder.charAt(i)).toUpperCase());
+        StringBuilder sb = new StringBuilder(name);
+        for (int i = 2; i < sb.length(); ) {
+            if (sb.charAt(i - 1) == '_') {
+                sb.replace(i - 1, i + 1, String.valueOf(sb.charAt(i)).toUpperCase());
             } else {
                 i++;
             }
         }
-        return builder.toString();
+        return sb.toString();
     }
 
     /**
@@ -217,8 +217,7 @@ public class DbUtils {
                 params.add(row.get(key));
             }
         }
-        sql.deleteCharAt(sql.length() - 1);
-        sql.append(conditionObject.sql());
+        sql.deleteCharAt(sql.length() - 1).append(conditionObject.sql());
         params.addAll(conditionObject.params);
         return jdbc.update(sql.toString(), params.toArray());
     }
@@ -261,9 +260,7 @@ public class DbUtils {
         for (var name : colNames) {
             sql.append("`").append(name).append("`,");
         }
-        sql.deleteCharAt(sql.length() - 1);
-
-        sql.append(") VALUES ");
+        sql.deleteCharAt(sql.length() - 1).append(") VALUES ");
         return sql.toString();
     }
 
@@ -279,6 +276,12 @@ public class DbUtils {
             sql.append(" `").append(k).append("`");
             if (v == null) {
                 sql.append(" IS NULL");
+            } else if (v instanceof Object[] objects) {
+                if (objects.length == 0) {
+                    throw new IllegalArgumentException(String.format("param '%s' must not empty", k));
+                }
+                sql.append(" IN (").append("?,".repeat(objects.length)).deleteCharAt(sql.length() - 1).append(")");
+                params.addAll(List.of(objects));
             } else {
                 sql.append("=?");
                 params.add(v);

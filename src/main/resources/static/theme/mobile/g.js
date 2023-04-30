@@ -62,7 +62,7 @@ function subString(s, n) {
 }
 
 function hideToast() {
-    let toastBox = document.querySelector("#toastBox")
+    let toastBox = document.querySelector("#toast-box-parent")
     if (toastBox !== null) {
         document.body.removeChild(toastBox)
     }
@@ -74,10 +74,13 @@ function hideToast() {
  */
 function showToast(msg, timeout = 3000) {
     hideToast()
+    let toastBoxParent = document.createElement("div")
+    toastBoxParent.setAttribute("id", "toast-box-parent")
     let toastBox = document.createElement("div")
-    toastBox.setAttribute("id", "toastBox")
+    toastBox.setAttribute("id", "toast-box")
     toastBox.innerText = msg
-    document.body.append(toastBox)
+    toastBoxParent.append(toastBox)
+    document.body.append(toastBoxParent)
     if (timeout > 0) {
         setTimeout(evt => { hideToast() }, timeout)
     }
